@@ -1,5 +1,5 @@
 from pathlib import Path
-
+from preprocessing import normalize_image
 import numpy as np
 import torch
 from PIL import Image
@@ -35,6 +35,7 @@ class SyntheticSegmentationDataset(Dataset):
         instance_mask = np.array(Image.open(instance_path))
 
         image = torch.from_numpy(image).float()
+        image = normalize_image(image)
         semantic_mask = torch.from_numpy(semantic_mask).long()
         instance_mask = torch.from_numpy(instance_mask).long()
 
