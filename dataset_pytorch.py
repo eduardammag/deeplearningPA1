@@ -1,15 +1,24 @@
 from pathlib import Path
-from preprocessing import normalize_image
+
 import numpy as np
 import torch
 from PIL import Image
 from torch.utils.data import Dataset
 
+from preprocessing import (
+    normalize_image,
+    create_boundary_mask,
+)
 
 class SyntheticSegmentationDataset(Dataset):
 
-    def __init__(self, root_dir):
+    def __init__(
+        self,
+        root_dir,
+        boundary_width=1
+    ):
         self.root_dir = Path(root_dir)
+        self.boundary_width = boundary_width
 
         self.samples = sorted(
             [
@@ -30,22 +39,49 @@ class SyntheticSegmentationDataset(Dataset):
         semantic_path = sample_dir / "semantic_mask.png"
         instance_path = sample_dir / "instance_mask.png"
 
-        image = np.array(Image.open(image_path))
-        semantic_mask = np.array(Image.open(semantic_path))
-        instance_mask = np.array(Image.open(instance_path))
+        image = np.array(
+            Image.open(image_path)
+        )
 
-        image = torch.from_numpy(image).float()
+        semantic_mask = np.array(
+            Image.open(semantic_path)
+        )
+
+        instance_mask = np.array(
+            Image.open(instance_path)
+        )
+
+        image = torch.from_numpy(
+            image
+        ).float()
+
+        semantic_mask = torch.from_numpy(
+            semantic_mask
+        ).long()
+
+        instance_mask = torch.from_numpy(
+            instance_mask
+        ).long()
+
         image = normalize_image(image)
-        semantic_mask = torch.from_numpy(semantic_mask).long()
-        instance_mask = torch.from_numpy(instance_mask).long()
 
         if image.ndim == 2:
             image = image.unsqueeze(0)
         else:
             image = image.permute(2, 0, 1)
 
+        boundary_mask = create_boundary_mask(
+            instance_mask,
+            boundary_width=self.boundary_width
+        )
+
+        boundary_mask = torch.from_numpy(
+            boundary_mask
+        ).long()
+
         return {
             "image": image,
             "semantic_mask": semantic_mask,
             "instance_mask": instance_mask,
+            "boundary_mask": boundary_mask,
         }

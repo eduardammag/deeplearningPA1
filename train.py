@@ -1,14 +1,11 @@
+import os
+
 import torch
 from torch.utils.data import DataLoader
 
 from dataset_pytorch import SyntheticSegmentationDataset
 from unet import UNet
-from cross_entropy import binary_cross_entropy_loss
-
-
-# --------------------------------------------------
-# Configurações
-# --------------------------------------------------
+from cross_entropy import boundary_cross_entropy_loss
 
 DATA_DIR = "data/synthetic"
 
@@ -16,16 +13,34 @@ BATCH_SIZE = 4
 EPOCHS = 10
 LEARNING_RATE = 1e-3
 
+BOUNDARY_WIDTH = 1
+
+NUM_CLASSES = 3
+
+CLASS_WEIGHTS = [
+    0.5,  # background
+    1.0,  # interior
+    2.0,  # boundary
+]
+
+CHECKPOINT_PATH = "checkpoints/unet_boundary.pth"
+
+
 DEVICE = torch.device(
     "cuda" if torch.cuda.is_available() else "cpu"
 )
 
+print(f"Device: {DEVICE}")
+print(f"Dataset: {DATA_DIR}")
+print(f"Boundary width: {BOUNDARY_WIDTH}")
+print(f"Classes: {NUM_CLASSES}")
+print(f"Class weights: {CLASS_WEIGHTS}")
 
-# --------------------------------------------------
-# Dataset
-# --------------------------------------------------
+dataset = SyntheticSegmentationDataset(
+    root_dir=DATA_DIR,
+    boundary_width=BOUNDARY_WIDTH
+)
 
-dataset = SyntheticSegmentationDataset(DATA_DIR)
 
 loader = DataLoader(
     dataset,
@@ -34,38 +49,26 @@ loader = DataLoader(
 )
 
 
-# --------------------------------------------------
-# Modelo
-# --------------------------------------------------
+print(
+    f"Quantidade de amostras: {len(dataset)}"
+)
 
 model = UNet(
     in_channels=1,
-    num_classes=1
+    num_classes=NUM_CLASSES
 )
 
 model = model.to(DEVICE)
 
-
-# --------------------------------------------------
-# Loss
-# --------------------------------------------------
-
-criterion = binary_cross_entropy_loss()
-
-
-# --------------------------------------------------
-# Otimizador
-# --------------------------------------------------
+criterion = boundary_cross_entropy_loss(
+    class_weights=CLASS_WEIGHTS,
+    device=DEVICE
+)
 
 optimizer = torch.optim.Adam(
     model.parameters(),
     lr=LEARNING_RATE
 )
-
-
-# --------------------------------------------------
-# Treinamento
-# --------------------------------------------------
 
 for epoch in range(EPOCHS):
 
@@ -77,30 +80,19 @@ for epoch in range(EPOCHS):
 
         images = batch["image"].to(DEVICE)
 
-        masks = batch["semantic_mask"].to(DEVICE)
+        masks = batch["boundary_mask"].to(DEVICE)
 
-        # BCE espera:
-        # images -> [B, 1, H, W]
-        # masks  -> [B, 1, H, W]
-
-        masks = masks.unsqueeze(1).float()
-
-        # Forward pass
         predictions = model(images)
 
-        # Calcula a loss
         loss = criterion(
             predictions,
             masks
         )
 
-        # Zera gradientes anteriores
         optimizer.zero_grad()
 
-        # Backpropagation
         loss.backward()
 
-        # Atualiza os pesos
         optimizer.step()
 
         total_loss += loss.item()
@@ -112,14 +104,14 @@ for epoch in range(EPOCHS):
         f"- Loss: {average_loss:.4f}"
     )
 
-
-# --------------------------------------------------
-# Salvar modelo
-# --------------------------------------------------
+os.makedirs(
+    os.path.dirname(CHECKPOINT_PATH),
+    exist_ok=True
+)
 
 torch.save(
     model.state_dict(),
-    "checkpoints/unet_baseline.pth"
+    CHECKPOINT_PATH
 )
 
-print("Modelo salvo em checkpoints/unet_baseline.pth")
+print(f"Modelo salvo em {CHECKPOINT_PATH}")
