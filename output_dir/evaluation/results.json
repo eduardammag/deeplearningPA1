@@ -1,0 +1,135 @@
+{
+    "baseline": {
+        "dice": 0.9667219042778015,
+        "iou": 0.935607635974884,
+        "map": 0.29640722512441264,
+        "count_error": 5.45,
+        "map_by_threshold": {
+            "0.5": 0.4325218762718762,
+            "0.55": 0.41444787851037856,
+            "0.6": 0.3848585355616606,
+            "0.65": 0.3493863335738336,
+            "0.7": 0.3211555134680134,
+            "0.75": 0.3031942039442039,
+            "0.8": 0.27652268969456467,
+            "0.85": 0.24028823202260702,
+            "0.9": 0.1624471408221408,
+            "0.95": 0.07924984737484737
+        }
+    },
+    "boundary_watershed": {
+        "dice": 0.9585778117179871,
+        "iou": 0.9205205798149109,
+        "map": 0.3134855792355792,
+        "count_error": 5.1,
+        "map_by_threshold": {
+            "0.5": 0.4645217398342398,
+            "0.55": 0.44608525733525733,
+            "0.6": 0.41978985135235136,
+            "0.65": 0.37001748482998476,
+            "0.7": 0.3644619292744292,
+            "0.75": 0.3257800209050209,
+            "0.8": 0.3114672503422503,
+            "0.85": 0.24827369389869394,
+            "0.9": 0.1352947214822215,
+            "0.95": 0.0491638431013431
+        }
+    },
+    "density_comparison": [
+        {
+            "num_objects": 5,
+            "baseline_map": 0.525,
+            "boundary_map": 0.43499999999999994,
+            "baseline_count_error": 1.0,
+            "boundary_count_error": 1.0
+        },
+        {
+            "num_objects": 6,
+            "baseline_map": 0.5805555555555556,
+            "boundary_map": 0.5648611111111111,
+            "baseline_count_error": 1.0,
+            "boundary_count_error": 1.0
+        },
+        {
+            "num_objects": 8,
+            "baseline_map": 0.259375,
+            "boundary_map": 0.28125,
+            "baseline_count_error": 4.0,
+            "boundary_count_error": 4.0
+        },
+        {
+            "num_objects": 9,
+            "baseline_map": 0.06481481481481481,
+            "boundary_map": 0.08333333333333334,
+            "baseline_count_error": 6.0,
+            "boundary_count_error": 6.0
+        },
+        {
+            "num_objects": 10,
+            "baseline_map": 0.42338095238095236,
+            "boundary_map": 0.4179047619047618,
+            "baseline_count_error": 3.0,
+            "boundary_count_error": 3.0
+        },
+        {
+            "num_objects": 12,
+            "baseline_map": 0.2698181216931217,
+            "boundary_map": 0.2714318783068783,
+            "baseline_count_error": 5.666666666666667,
+            "boundary_count_error": 5.333333333333333
+        },
+        {
+            "num_objects": 13,
+            "baseline_map": 0.35192307692307695,
+            "boundary_map": 0.3915598290598291,
+            "baseline_count_error": 5.0,
+            "boundary_count_error": 4.0
+        },
+        {
+            "num_objects": 14,
+            "baseline_map": 0.19800264550264546,
+            "boundary_map": 0.2751593314093314,
+            "baseline_count_error": 6.333333333333333,
+            "boundary_count_error": 5.333333333333333
+        },
+        {
+            "num_objects": 15,
+            "baseline_map": 0.28272222222222226,
+            "boundary_map": 0.3355079365079365,
+            "baseline_count_error": 6.5,
+            "boundary_count_error": 6.0
+        },
+        {
+            "num_objects": 16,
+            "baseline_map": 0.30587989267676763,
+            "boundary_map": 0.34550189393939384,
+            "baseline_count_error": 6.5,
+            "boundary_count_error": 6.0
+        },
+        {
+            "num_objects": 18,
+            "baseline_map": 0.06924603174603175,
+            "boundary_map": 0.05562169312169313,
+            "baseline_count_error": 11.5,
+            "boundary_count_error": 11.5
+        }
+    ],
+    "configuration": {
+        "interior_threshold": 0.5,
+        "foreground_threshold": 0.5,
+        "min_marker_size": 10,
+        "matching": "greedy IoU-descending",
+        "iou_thresholds": [
+            0.5,
+            0.55,
+            0.6,
+            0.65,
+            0.7,
+            0.75,
+            0.8,
+            0.85,
+            0.9,
+            0.95
+        ]
+    }
+}
