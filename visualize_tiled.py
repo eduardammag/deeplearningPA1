@@ -16,11 +16,6 @@ from instance_fusion import (
     fuse_instances
 )
 
-
-# ============================================================
-# Configurações
-# ============================================================
-
 DATA_DIR = "data/synthetic"
 
 CHECKPOINT = (
@@ -39,18 +34,11 @@ FIGURE_PATH = (
 TILE_SIZE = DEFAULT_TILE_SIZE
 OVERLAP = DEFAULT_OVERLAP
 
-FUSION_IOU_THRESHOLD = 0.30
+FUSION_IOU_THRESHOLD = 0.40
 
 SAMPLE_INDEX = 0
 
-
-# ============================================================
-# Cores das instâncias
-# ============================================================
-
-def instance_colors(
-    instance_mask
-):
+def instance_colors(instance_mask):
     """
     Cria uma imagem colorida para visualização das instâncias.
 
@@ -76,7 +64,6 @@ def instance_colors(
 
     for instance_id in ids:
 
-        # Gerador determinístico baseado no ID.
         rng = np.random.default_rng(
             int(instance_id)
         )
@@ -92,11 +79,6 @@ def instance_colors(
         ] = color
 
     return output
-
-
-# ============================================================
-# Imagem dos tiles
-# ============================================================
 
 def draw_tile_boundaries(
     axis,
@@ -145,11 +127,6 @@ def draw_tile_boundaries(
             str(index),
             fontsize=8
         )
-
-
-# ============================================================
-# Encontrar regiões de interesse
-# ============================================================
 
 def find_boundary_instances(
     ground_truth,
@@ -234,20 +211,7 @@ def find_boundary_instances(
 
     return None
 
-
-# ============================================================
-# Figura
-# ============================================================
-
-def create_figure(
-    image,
-    ground_truth,
-    tiled_result,
-    fused_mask
-):
-    """
-    Cria a figura principal da Parte 4.
-    """
+def create_figure(image, ground_truth, tiled_result, fused_mask):
 
     naive_mask = tiled_result[
         "naive_instance_mask"
@@ -265,10 +229,6 @@ def create_figure(
         figsize=(15, 9)
     )
 
-    # --------------------------------------------------------
-    # Imagem
-    # --------------------------------------------------------
-
     axes[0, 0].imshow(
         image,
         cmap="gray"
@@ -283,10 +243,6 @@ def create_figure(
         positions
     )
 
-    # --------------------------------------------------------
-    # Ground truth
-    # --------------------------------------------------------
-
     axes[0, 1].imshow(
         instance_colors(
             ground_truth
@@ -296,10 +252,6 @@ def create_figure(
     axes[0, 1].set_title(
         "Ground truth"
     )
-
-    # --------------------------------------------------------
-    # Tiles
-    # --------------------------------------------------------
 
     axes[0, 2].imshow(
         image,
@@ -315,10 +267,6 @@ def create_figure(
         "Tiles sobrepostos"
     )
 
-    # --------------------------------------------------------
-    # Predição ingênua
-    # --------------------------------------------------------
-
     axes[1, 0].imshow(
         instance_colors(
             naive_mask
@@ -329,10 +277,6 @@ def create_figure(
         "Predição ingênua"
     )
 
-    # --------------------------------------------------------
-    # Predição após fusão
-    # --------------------------------------------------------
-
     axes[1, 1].imshow(
         instance_colors(
             fused_mask
@@ -342,10 +286,6 @@ def create_figure(
     axes[1, 1].set_title(
         "Predição após fusão"
     )
-
-    # --------------------------------------------------------
-    # Comparação
-    # --------------------------------------------------------
 
     difference = (
         naive_mask != fused_mask
@@ -375,11 +315,6 @@ def create_figure(
     fig.tight_layout()
 
     return fig
-
-
-# ============================================================
-# Main
-# ============================================================
 
 def main():
 
@@ -432,10 +367,6 @@ def main():
         f"Overlap: {OVERLAP}"
     )
 
-    # --------------------------------------------------------
-    # Inferência
-    # --------------------------------------------------------
-
     tiled_result = tiled_inference(
         model,
         image,
@@ -447,10 +378,6 @@ def main():
         "naive_instance_mask"
     ]
 
-    # --------------------------------------------------------
-    # Fusão
-    # --------------------------------------------------------
-
     (
         fused_mask,
         merge_candidates,
@@ -459,10 +386,6 @@ def main():
         tiled_result,
         iou_threshold=FUSION_IOU_THRESHOLD
     )
-
-    # --------------------------------------------------------
-    # Estatísticas
-    # --------------------------------------------------------
 
     gt_count = len(
         np.unique(
@@ -503,10 +426,6 @@ def main():
         f"{len(merge_candidates)}"
     )
 
-    # --------------------------------------------------------
-    # Instância que cruza fronteira
-    # --------------------------------------------------------
-
     boundary_instance = (
         find_boundary_instances(
             ground_truth,
@@ -529,10 +448,6 @@ def main():
             "foi encontrada cruzando "
             "uma fronteira exata do grid."
         )
-
-    # --------------------------------------------------------
-    # Figura
-    # --------------------------------------------------------
 
     figure = create_figure(
         image,

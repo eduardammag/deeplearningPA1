@@ -22,11 +22,6 @@ from instance_fusion import (
     count_instances
 )
 
-
-# ============================================================
-# Configurações
-# ============================================================
-
 DATA_DIR = "data/synthetic"
 
 CHECKPOINT = (
@@ -52,27 +47,13 @@ DEVICE = torch.device(
     else "cpu"
 )
 
-
-# ============================================================
-# Dataset
-# ============================================================
-
 def create_dataset():
 
     return SyntheticSegmentationDataset(
         DATA_DIR
     )
 
-
-# ============================================================
-# Avaliação de uma imagem
-# ============================================================
-
-def evaluate_sample(
-    model,
-    image,
-    ground_truth
-):
+def evaluate_sample(model, image, ground_truth):
     """
     Executa tiled inference e calcula:
 
@@ -97,10 +78,6 @@ def evaluate_sample(
         "foreground_probability"
     ]
 
-    # --------------------------------------------------------
-    # Avaliação antes da fusão
-    # --------------------------------------------------------
-
     (
         _,
         naive_map
@@ -115,10 +92,6 @@ def evaluate_sample(
         ground_truth
     )
 
-    # --------------------------------------------------------
-    # Fusão
-    # --------------------------------------------------------
-
     (
         fused_mask,
         merge_candidates,
@@ -127,10 +100,6 @@ def evaluate_sample(
         tiled_result,
         iou_threshold=FUSION_IOU_THRESHOLD
     )
-
-    # --------------------------------------------------------
-    # Avaliação depois da fusão
-    # --------------------------------------------------------
 
     (
         _,
@@ -184,11 +153,6 @@ def evaluate_sample(
             len(groups)
     }
 
-
-# ============================================================
-# Estatísticas
-# ============================================================
-
 def mean_std(
     values
 ):
@@ -224,11 +188,6 @@ def mean_std(
             )
         )
     }
-
-
-# ============================================================
-# Avaliação completa
-# ============================================================
 
 def evaluate_dataset():
 
@@ -319,10 +278,6 @@ def evaluate_dataset():
             f"{result['fused_map']:.4f}"
         )
 
-    # --------------------------------------------------------
-    # Estatísticas globais
-    # --------------------------------------------------------
-
     naive_maps = [
         item["naive_map"]
         for item in results
@@ -395,10 +350,6 @@ def evaluate_dataset():
             ensure_ascii=False
         )
 
-    # --------------------------------------------------------
-    # Resultado final
-    # --------------------------------------------------------
-
     print()
 
     print(
@@ -462,11 +413,6 @@ def evaluate_dataset():
     )
 
     return output
-
-
-# ============================================================
-# Main
-# ============================================================
 
 def main():
 

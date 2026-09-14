@@ -7,11 +7,6 @@ import torch.nn.functional as F
 from unet import UNet
 from watershed import watershed_from_logits
 
-
-# ============================================================
-# Configurações
-# ============================================================
-
 NUM_CLASSES = 3
 
 INTERIOR_THRESHOLD = 0.5
@@ -25,15 +20,7 @@ DEVICE = torch.device(
     "cuda" if torch.cuda.is_available() else "cpu"
 )
 
-
-# ============================================================
-# Modelo
-# ============================================================
-
 def create_model():
-    """
-    Cria o U-Net usado na Parte 2.
-    """
 
     model = UNet(
         in_channels=1,
@@ -62,11 +49,6 @@ def load_model(checkpoint):
     model.eval()
 
     return model
-
-
-# ============================================================
-# Preparação da imagem
-# ============================================================
 
 def prepare_image(image):
     """
@@ -118,17 +100,7 @@ def prepare_image(image):
 
     return tensor
 
-
-# ============================================================
-# Geração dos tiles
-# ============================================================
-
-def generate_tile_positions(
-    height,
-    width,
-    tile_size,
-    overlap
-):
+def generate_tile_positions(height, width, tile_size, overlap):
     """
     Gera as coordenadas dos tiles.
 
@@ -209,24 +181,7 @@ def generate_tile_positions(
 
     return positions
 
-
-# ============================================================
-# Padding
-# ============================================================
-
-def pad_tile(
-    tile,
-    tile_size
-):
-    """
-    Preenche tiles menores que tile_size.
-
-    Retorna:
-
-        padded_tile
-        original_height
-        original_width
-    """
+def pad_tile(tile, tile_size):
 
     _, _, height, width = tile.shape
 
@@ -259,24 +214,7 @@ def pad_tile(
         width
     )
 
-
-# ============================================================
-# Inferência em um tile
-# ============================================================
-
-def predict_tile(
-    model,
-    tile
-):
-    """
-    Executa a inferência de um único tile.
-
-    Retorna:
-
-        instance_mask
-        foreground_probability
-        probabilities
-    """
+def predict_tile(model, tile):
 
     tile = prepare_image(tile)
 
@@ -337,29 +275,13 @@ def predict_tile(
         :original_width
     ].detach().cpu().numpy()
 
-    return (
-        instance_mask,
-        foreground_probability,
-        probabilities
-    )
+    return (instance_mask, foreground_probability, probabilities)
 
-
-# ============================================================
-# Inferência tiled
-# ============================================================
-
-def tiled_inference(
-    model,
-    image,
-    tile_size=DEFAULT_TILE_SIZE,
-    overlap=DEFAULT_OVERLAP
-):
+def tiled_inference(model, image, tile_size=DEFAULT_TILE_SIZE, overlap=DEFAULT_OVERLAP):
     """
-    Executa inferência em uma imagem grande usando tiles
-    sobrepostos.
+    Executa inferência em uma imagem grande usando tiles sobrepostos.
 
-    Cada instância de cada tile recebe inicialmente um ID
-    próprio.
+    Cada instância de cada tile recebe inicialmente um ID próprio.
 
     Essa é a representação "ingênua" usada antes da fusão.
 
@@ -463,16 +385,6 @@ def tiled_inference(
                 global_x
             ]
 
-            # ------------------------------------------------
-            # Predição ingênua
-            #
-            # Se duas instâncias ocupam a mesma região por
-            # causa da sobreposição dos tiles, a predição do
-            # tile atual sobrescreve a anterior.
-            #
-            # Os IDs continuam distintos.
-            # ------------------------------------------------
-
             region[local_mask] = global_id
 
             naive_instance_mask[
@@ -529,11 +441,6 @@ def tiled_inference(
         "tile_positions":
             positions
     }
-
-
-# ============================================================
-# Exemplo de uso
-# ============================================================
 
 def main():
 

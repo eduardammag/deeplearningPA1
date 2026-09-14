@@ -1,14 +1,6 @@
 import numpy as np
 
-
-# ============================================================
-# IoU
-# ============================================================
-
-def mask_iou(
-    mask_a,
-    mask_b
-):
+def mask_iou(mask_a, mask_b):
     """
     Calcula IoU entre duas máscaras booleanas.
     """
@@ -31,11 +23,6 @@ def mask_iou(
         intersection /
         union
     )
-
-
-# ============================================================
-# União-Find
-# ============================================================
 
 class UnionFind:
 
@@ -80,15 +67,7 @@ class UnionFind:
 
             self.parent[root_b] = root_a
 
-
-# ============================================================
-# Região de sobreposição
-# ============================================================
-
-def overlap_region(
-    position_a,
-    position_b
-):
+def overlap_region(position_a, position_b):
     """
     Calcula a região espacial de sobreposição entre dois tiles.
 
@@ -148,14 +127,7 @@ def overlap_region(
         x_end
     )
 
-
-# ============================================================
-# Instâncias globais dos tiles
-# ============================================================
-
-def build_global_tile_instances(
-    tile_predictions
-):
+def build_global_tile_instances(tile_predictions):
     """
     Converte as máscaras locais dos tiles em máscaras globais.
 
@@ -216,15 +188,7 @@ def build_global_tile_instances(
 
     return instances
 
-
-# ============================================================
-# Comparação entre instâncias na sobreposição
-# ============================================================
-
-def find_merge_candidates(
-    instances,
-    iou_threshold=0.30
-):
+def find_merge_candidates(instances, iou_threshold=0.30):
     """
     Procura pares de instâncias que provavelmente representam
     o mesmo objeto em tiles diferentes.
@@ -294,10 +258,6 @@ def find_merge_candidates(
                 "position"
             ]
 
-            # ------------------------------------------------
-            # Coordenadas relativas ao tile A
-            # ------------------------------------------------
-
             a_y_start = (
                 y_start -
                 ay_start
@@ -317,10 +277,6 @@ def find_merge_candidates(
                 x_end -
                 ax_start
             )
-
-            # ------------------------------------------------
-            # Coordenadas relativas ao tile B
-            # ------------------------------------------------
 
             b_y_start = (
                 y_start -
@@ -383,15 +339,7 @@ def find_merge_candidates(
 
     return candidates
 
-
-# ============================================================
-# Fusão
-# ============================================================
-
-def fuse_instances(
-    tiled_result,
-    iou_threshold=0.30
-):
+def fuse_instances(tiled_result, iou_threshold=0.30):
     """
     Funde instâncias provenientes de tiles sobrepostos.
 
@@ -469,10 +417,6 @@ def fuse_instances(
             global_id
         )
 
-    # --------------------------------------------------------
-    # Criar máscara final
-    # --------------------------------------------------------
-
     naive_mask = tiled_result[
         "naive_instance_mask"
     ]
@@ -495,11 +439,6 @@ def fuse_instances(
         )
 
         next_id += 1
-
-    # --------------------------------------------------------
-    # Para cada pixel da máscara ingênua, descobrir a que
-    # grupo sua instância pertence.
-    # --------------------------------------------------------
 
     id_to_root = {}
 
@@ -526,23 +465,9 @@ def fuse_instances(
             mask
         ] = output_id
 
-    return (
-        fused_mask,
-        candidates,
-        list(groups.values())
-    )
+    return (fused_mask, candidates, list(groups.values()))
 
-
-# ============================================================
-# Estatísticas
-# ============================================================
-
-def count_instances(
-    instance_mask
-):
-    """
-    Conta instâncias em uma máscara.
-    """
+def count_instances(instance_mask):
 
     ids = np.unique(
         instance_mask
@@ -553,14 +478,7 @@ def count_instances(
     )
 
 
-def fusion_summary(
-    naive_mask,
-    fused_mask,
-    candidates
-):
-    """
-    Produz resumo da fusão.
-    """
+def fusion_summary(naive_mask, fused_mask, candidates):
 
     naive_count = count_instances(
         naive_mask
@@ -583,11 +501,6 @@ def fusion_summary(
         "reduction":
             naive_count - fused_count
     }
-
-
-# ============================================================
-# Teste simples
-# ============================================================
 
 def main():
 
