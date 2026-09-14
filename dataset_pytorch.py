@@ -5,10 +5,7 @@ import torch
 from PIL import Image
 from torch.utils.data import Dataset
 
-from preprocessing import (
-    normalize_image,
-    create_boundary_mask,
-)
+from preprocessing import  create_boundary_mask, normalize_image
 
 class SyntheticSegmentationDataset(Dataset):
 
