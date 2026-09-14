@@ -1,0 +1,3290 @@
+{
+    "summary": {
+        "tile_size": 64,
+        "overlap": 16,
+        "fusion_iou_threshold": 0.4,
+        "naive_map": {
+            "mean": 0.1783971666756028,
+            "std": 0.10101631667754293
+        },
+        "fused_map": {
+            "mean": 0.30782309601773883,
+            "std": 0.18390626917206537
+        },
+        "naive_count_error": {
+            "mean": 3.6,
+            "std": 2.643761275949575
+        },
+        "fused_count_error": {
+            "mean": 4.95,
+            "std": 2.910507280798134
+        }
+    },
+    "images": [
+        {
+            "naive_map": 0.3129365079365079,
+            "fused_map": 0.8144444444444444,
+            "naive_count": 11,
+            "fused_count": 6,
+            "ground_truth_count": 6,
+            "naive_count_error": 5,
+            "fused_count_error": 0,
+            "num_merges": 23,
+            "merge_candidates": [
+                {
+                    "global_id_a": 9,
+                    "global_id_b": 16,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 14,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 17,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 19,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 18,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 17,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 19,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 15,
+                    "global_id_b": 20,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 17,
+                    "global_id_b": 19,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 1,
+                    "global_id_b": 3,
+                    "iou": 0.9942028985507246
+                },
+                {
+                    "global_id_a": 5,
+                    "global_id_b": 8,
+                    "iou": 0.9939393939393939
+                },
+                {
+                    "global_id_a": 8,
+                    "global_id_b": 13,
+                    "iou": 0.9937304075235109
+                },
+                {
+                    "global_id_a": 4,
+                    "global_id_b": 7,
+                    "iou": 0.9918032786885246
+                },
+                {
+                    "global_id_a": 10,
+                    "global_id_b": 13,
+                    "iou": 0.991304347826087
+                },
+                {
+                    "global_id_a": 5,
+                    "global_id_b": 10,
+                    "iou": 0.9826086956521739
+                },
+                {
+                    "global_id_a": 5,
+                    "global_id_b": 13,
+                    "iou": 0.9826086956521739
+                },
+                {
+                    "global_id_a": 8,
+                    "global_id_b": 10,
+                    "iou": 0.9826086956521739
+                },
+                {
+                    "global_id_a": 2,
+                    "global_id_b": 9,
+                    "iou": 0.972972972972973
+                },
+                {
+                    "global_id_a": 3,
+                    "global_id_b": 6,
+                    "iou": 0.9727272727272728
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 15,
+                    "iou": 0.8928571428571429
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 20,
+                    "iou": 0.8928571428571429
+                },
+                {
+                    "global_id_a": 15,
+                    "global_id_b": 18,
+                    "iou": 0.8928571428571429
+                },
+                {
+                    "global_id_a": 18,
+                    "global_id_b": 20,
+                    "iou": 0.8928571428571429
+                }
+            ],
+            "num_groups": 6,
+            "image_index": 0
+        },
+        {
+            "naive_map": 0.1277777777777778,
+            "fused_map": 0.2958333333333333,
+            "naive_count": 7,
+            "fused_count": 4,
+            "ground_truth_count": 6,
+            "naive_count_error": 1,
+            "fused_count_error": 2,
+            "num_merges": 15,
+            "merge_candidates": [
+                {
+                    "global_id_a": 3,
+                    "global_id_b": 6,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 7,
+                    "global_id_b": 8,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 12,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 5,
+                    "global_id_b": 10,
+                    "iou": 0.9966101694915255
+                },
+                {
+                    "global_id_a": 7,
+                    "global_id_b": 11,
+                    "iou": 0.9941176470588236
+                },
+                {
+                    "global_id_a": 7,
+                    "global_id_b": 12,
+                    "iou": 0.9941176470588236
+                },
+                {
+                    "global_id_a": 8,
+                    "global_id_b": 11,
+                    "iou": 0.9941176470588236
+                },
+                {
+                    "global_id_a": 8,
+                    "global_id_b": 12,
+                    "iou": 0.9941176470588236
+                },
+                {
+                    "global_id_a": 4,
+                    "global_id_b": 9,
+                    "iou": 0.9808917197452229
+                },
+                {
+                    "global_id_a": 2,
+                    "global_id_b": 4,
+                    "iou": 0.9742489270386266
+                },
+                {
+                    "global_id_a": 2,
+                    "global_id_b": 3,
+                    "iou": 0.9642857142857143
+                },
+                {
+                    "global_id_a": 2,
+                    "global_id_b": 6,
+                    "iou": 0.9642857142857143
+                },
+                {
+                    "global_id_a": 3,
+                    "global_id_b": 4,
+                    "iou": 0.9642857142857143
+                },
+                {
+                    "global_id_a": 4,
+                    "global_id_b": 6,
+                    "iou": 0.9210526315789473
+                },
+                {
+                    "global_id_a": 6,
+                    "global_id_b": 9,
+                    "iou": 0.65
+                }
+            ],
+            "num_groups": 4,
+            "image_index": 1
+        },
+        {
+            "naive_map": 0.04611111111111112,
+            "fused_map": 0.09259259259259259,
+            "naive_count": 6,
+            "fused_count": 3,
+            "ground_truth_count": 9,
+            "naive_count_error": 3,
+            "fused_count_error": 6,
+            "num_merges": 4,
+            "merge_candidates": [
+                {
+                    "global_id_a": 4,
+                    "global_id_b": 7,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 1,
+                    "global_id_b": 4,
+                    "iou": 0.9916492693110647
+                },
+                {
+                    "global_id_a": 2,
+                    "global_id_b": 3,
+                    "iou": 0.9883720930232558
+                },
+                {
+                    "global_id_a": 5,
+                    "global_id_b": 6,
+                    "iou": 0.7833333333333333
+                }
+            ],
+            "num_groups": 3,
+            "image_index": 2
+        },
+        {
+            "naive_map": 0.22089646464646467,
+            "fused_map": 0.21166666666666667,
+            "naive_count": 19,
+            "fused_count": 6,
+            "ground_truth_count": 12,
+            "naive_count_error": 7,
+            "fused_count_error": 6,
+            "num_merges": 43,
+            "merge_candidates": [
+                {
+                    "global_id_a": 4,
+                    "global_id_b": 8,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 21,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 13,
+                    "global_id_b": 22,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 15,
+                    "global_id_b": 24,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 15,
+                    "global_id_b": 27,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 17,
+                    "global_id_b": 26,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 18,
+                    "global_id_b": 24,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 24,
+                    "global_id_b": 27,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 15,
+                    "global_id_b": 18,
+                    "iou": 0.9981851179673321
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 23,
+                    "iou": 0.9979757085020243
+                },
+                {
+                    "global_id_a": 16,
+                    "global_id_b": 25,
+                    "iou": 0.996551724137931
+                },
+                {
+                    "global_id_a": 18,
+                    "global_id_b": 27,
+                    "iou": 0.9961759082217974
+                },
+                {
+                    "global_id_a": 1,
+                    "global_id_b": 3,
+                    "iou": 0.99581589958159
+                },
+                {
+                    "global_id_a": 16,
+                    "global_id_b": 19,
+                    "iou": 0.9956896551724138
+                },
+                {
+                    "global_id_a": 19,
+                    "global_id_b": 28,
+                    "iou": 0.9956896551724138
+                },
+                {
+                    "global_id_a": 5,
+                    "global_id_b": 9,
+                    "iou": 0.995114006514658
+                },
+                {
+                    "global_id_a": 25,
+                    "global_id_b": 28,
+                    "iou": 0.9921671018276762
+                },
+                {
+                    "global_id_a": 16,
+                    "global_id_b": 28,
+                    "iou": 0.9914163090128756
+                },
+                {
+                    "global_id_a": 19,
+                    "global_id_b": 25,
+                    "iou": 0.9914163090128756
+                },
+                {
+                    "global_id_a": 5,
+                    "global_id_b": 14,
+                    "iou": 0.9895833333333334
+                },
+                {
+                    "global_id_a": 9,
+                    "global_id_b": 17,
+                    "iou": 0.9888888888888889
+                },
+                {
+                    "global_id_a": 9,
+                    "global_id_b": 14,
+                    "iou": 0.9888579387186629
+                },
+                {
+                    "global_id_a": 6,
+                    "global_id_b": 15,
+                    "iou": 0.9875776397515528
+                },
+                {
+                    "global_id_a": 6,
+                    "global_id_b": 10,
+                    "iou": 0.9874213836477987
+                },
+                {
+                    "global_id_a": 2,
+                    "global_id_b": 11,
+                    "iou": 0.9854227405247813
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 17,
+                    "iou": 0.9851411589895989
+                },
+                {
+                    "global_id_a": 5,
+                    "global_id_b": 17,
+                    "iou": 0.9833333333333333
+                },
+                {
+                    "global_id_a": 6,
+                    "global_id_b": 18,
+                    "iou": 0.9813664596273292
+                },
+                {
+                    "global_id_a": 10,
+                    "global_id_b": 15,
+                    "iou": 0.9751552795031055
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 26,
+                    "iou": 0.9744408945686901
+                },
+                {
+                    "global_id_a": 17,
+                    "global_id_b": 23,
+                    "iou": 0.9744408945686901
+                },
+                {
+                    "global_id_a": 23,
+                    "global_id_b": 26,
+                    "iou": 0.9744408945686901
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 20,
+                    "iou": 0.9707602339181286
+                },
+                {
+                    "global_id_a": 3,
+                    "global_id_b": 7,
+                    "iou": 0.96875
+                },
+                {
+                    "global_id_a": 10,
+                    "global_id_b": 18,
+                    "iou": 0.9655172413793104
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 21,
+                    "iou": 0.956989247311828
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 23,
+                    "iou": 0.9518716577540107
+                },
+                {
+                    "global_id_a": 21,
+                    "global_id_b": 23,
+                    "iou": 0.9518716577540107
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 14,
+                    "iou": 0.839622641509434
+                },
+                {
+                    "global_id_a": 13,
+                    "global_id_b": 16,
+                    "iou": 0.7543859649122807
+                },
+                {
+                    "global_id_a": 13,
+                    "global_id_b": 25,
+                    "iou": 0.7543859649122807
+                },
+                {
+                    "global_id_a": 16,
+                    "global_id_b": 22,
+                    "iou": 0.7543859649122807
+                },
+                {
+                    "global_id_a": 22,
+                    "global_id_b": 25,
+                    "iou": 0.7413793103448276
+                }
+            ],
+            "num_groups": 6,
+            "image_index": 3
+        },
+        {
+            "naive_map": 0.0598124098124098,
+            "fused_map": 0.0880952380952381,
+            "naive_count": 18,
+            "fused_count": 7,
+            "ground_truth_count": 18,
+            "naive_count_error": 0,
+            "fused_count_error": 11,
+            "num_merges": 43,
+            "merge_candidates": [
+                {
+                    "global_id_a": 5,
+                    "global_id_b": 7,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 8,
+                    "global_id_b": 18,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 10,
+                    "global_id_b": 14,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 10,
+                    "global_id_b": 20,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 10,
+                    "global_id_b": 24,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 16,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 13,
+                    "global_id_b": 23,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 20,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 25,
+                    "global_id_b": 29,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 9,
+                    "global_id_b": 19,
+                    "iou": 0.9973333333333333
+                },
+                {
+                    "global_id_a": 4,
+                    "global_id_b": 6,
+                    "iou": 0.9965217391304347
+                },
+                {
+                    "global_id_a": 15,
+                    "global_id_b": 26,
+                    "iou": 0.9959250203748982
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 15,
+                    "iou": 0.9955724225173941
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 21,
+                    "iou": 0.993960310612597
+                },
+                {
+                    "global_id_a": 21,
+                    "global_id_b": 26,
+                    "iou": 0.9939550949913645
+                },
+                {
+                    "global_id_a": 6,
+                    "global_id_b": 11,
+                    "iou": 0.992822966507177
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 26,
+                    "iou": 0.9914015477214101
+                },
+                {
+                    "global_id_a": 24,
+                    "global_id_b": 28,
+                    "iou": 0.9903381642512077
+                },
+                {
+                    "global_id_a": 15,
+                    "global_id_b": 21,
+                    "iou": 0.9896818572656921
+                },
+                {
+                    "global_id_a": 2,
+                    "global_id_b": 8,
+                    "iou": 0.9887640449438202
+                },
+                {
+                    "global_id_a": 6,
+                    "global_id_b": 15,
+                    "iou": 0.9880952380952381
+                },
+                {
+                    "global_id_a": 4,
+                    "global_id_b": 11,
+                    "iou": 0.9880382775119617
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 17,
+                    "iou": 0.9836065573770492
+                },
+                {
+                    "global_id_a": 4,
+                    "global_id_b": 15,
+                    "iou": 0.9833333333333333
+                },
+                {
+                    "global_id_a": 7,
+                    "global_id_b": 16,
+                    "iou": 0.9822695035460993
+                },
+                {
+                    "global_id_a": 5,
+                    "global_id_b": 12,
+                    "iou": 0.9808612440191388
+                },
+                {
+                    "global_id_a": 5,
+                    "global_id_b": 16,
+                    "iou": 0.9808612440191388
+                },
+                {
+                    "global_id_a": 7,
+                    "global_id_b": 12,
+                    "iou": 0.9808612440191388
+                },
+                {
+                    "global_id_a": 1,
+                    "global_id_b": 3,
+                    "iou": 0.9768518518518519
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 24,
+                    "iou": 0.9591836734693877
+                },
+                {
+                    "global_id_a": 17,
+                    "global_id_b": 28,
+                    "iou": 0.9375
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 28,
+                    "iou": 0.9230769230769231
+                },
+                {
+                    "global_id_a": 17,
+                    "global_id_b": 24,
+                    "iou": 0.9230769230769231
+                },
+                {
+                    "global_id_a": 20,
+                    "global_id_b": 24,
+                    "iou": 0.9230769230769231
+                },
+                {
+                    "global_id_a": 22,
+                    "global_id_b": 27,
+                    "iou": 0.9210526315789473
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 22,
+                    "iou": 0.8837209302325582
+                },
+                {
+                    "global_id_a": 16,
+                    "global_id_b": 22,
+                    "iou": 0.8837209302325582
+                },
+                {
+                    "global_id_a": 13,
+                    "global_id_b": 19,
+                    "iou": 0.8461538461538461
+                },
+                {
+                    "global_id_a": 19,
+                    "global_id_b": 23,
+                    "iou": 0.8461538461538461
+                },
+                {
+                    "global_id_a": 9,
+                    "global_id_b": 13,
+                    "iou": 0.8380952380952381
+                },
+                {
+                    "global_id_a": 9,
+                    "global_id_b": 23,
+                    "iou": 0.8380952380952381
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 27,
+                    "iou": 0.813953488372093
+                },
+                {
+                    "global_id_a": 16,
+                    "global_id_b": 27,
+                    "iou": 0.7954545454545454
+                }
+            ],
+            "num_groups": 7,
+            "image_index": 4
+        },
+        {
+            "naive_map": 0.13014880952380953,
+            "fused_map": 0.19895833333333332,
+            "naive_count": 20,
+            "fused_count": 9,
+            "ground_truth_count": 16,
+            "naive_count_error": 4,
+            "fused_count_error": 7,
+            "num_merges": 40,
+            "merge_candidates": [
+                {
+                    "global_id_a": 1,
+                    "global_id_b": 5,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 4,
+                    "global_id_b": 9,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 5,
+                    "global_id_b": 10,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 7,
+                    "global_id_b": 11,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 15,
+                    "global_id_b": 24,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 19,
+                    "global_id_b": 28,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 20,
+                    "global_id_b": 22,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 29,
+                    "global_id_b": 31,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 27,
+                    "global_id_b": 30,
+                    "iou": 0.9975961538461539
+                },
+                {
+                    "global_id_a": 18,
+                    "global_id_b": 21,
+                    "iou": 0.9957173447537473
+                },
+                {
+                    "global_id_a": 17,
+                    "global_id_b": 26,
+                    "iou": 0.9953488372093023
+                },
+                {
+                    "global_id_a": 18,
+                    "global_id_b": 27,
+                    "iou": 0.9928400954653938
+                },
+                {
+                    "global_id_a": 16,
+                    "global_id_b": 25,
+                    "iou": 0.9914529914529915
+                },
+                {
+                    "global_id_a": 18,
+                    "global_id_b": 30,
+                    "iou": 0.9904534606205251
+                },
+                {
+                    "global_id_a": 21,
+                    "global_id_b": 27,
+                    "iou": 0.9904534606205251
+                },
+                {
+                    "global_id_a": 20,
+                    "global_id_b": 29,
+                    "iou": 0.9872773536895675
+                },
+                {
+                    "global_id_a": 20,
+                    "global_id_b": 31,
+                    "iou": 0.9872773536895675
+                },
+                {
+                    "global_id_a": 22,
+                    "global_id_b": 29,
+                    "iou": 0.9872773536895675
+                },
+                {
+                    "global_id_a": 22,
+                    "global_id_b": 31,
+                    "iou": 0.9872773536895675
+                },
+                {
+                    "global_id_a": 21,
+                    "global_id_b": 30,
+                    "iou": 0.9859402460456942
+                },
+                {
+                    "global_id_a": 3,
+                    "global_id_b": 6,
+                    "iou": 0.984375
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 23,
+                    "iou": 0.9813278008298755
+                },
+                {
+                    "global_id_a": 2,
+                    "global_id_b": 13,
+                    "iou": 0.9803921568627451
+                },
+                {
+                    "global_id_a": 6,
+                    "global_id_b": 17,
+                    "iou": 0.9803921568627451
+                },
+                {
+                    "global_id_a": 8,
+                    "global_id_b": 21,
+                    "iou": 0.9787234042553191
+                },
+                {
+                    "global_id_a": 8,
+                    "global_id_b": 12,
+                    "iou": 0.9782608695652174
+                },
+                {
+                    "global_id_a": 15,
+                    "global_id_b": 19,
+                    "iou": 0.9736842105263158
+                },
+                {
+                    "global_id_a": 15,
+                    "global_id_b": 28,
+                    "iou": 0.9736842105263158
+                },
+                {
+                    "global_id_a": 19,
+                    "global_id_b": 24,
+                    "iou": 0.9736842105263158
+                },
+                {
+                    "global_id_a": 24,
+                    "global_id_b": 28,
+                    "iou": 0.9736842105263158
+                },
+                {
+                    "global_id_a": 3,
+                    "global_id_b": 17,
+                    "iou": 0.9673202614379085
+                },
+                {
+                    "global_id_a": 8,
+                    "global_id_b": 18,
+                    "iou": 0.9583333333333334
+                },
+                {
+                    "global_id_a": 6,
+                    "global_id_b": 14,
+                    "iou": 0.9548387096774194
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 17,
+                    "iou": 0.9505208333333334
+                },
+                {
+                    "global_id_a": 3,
+                    "global_id_b": 14,
+                    "iou": 0.9459459459459459
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 26,
+                    "iou": 0.9388646288209607
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 18,
+                    "iou": 0.9375
+                },
+                {
+                    "global_id_a": 23,
+                    "global_id_b": 26,
+                    "iou": 0.9307359307359307
+                },
+                {
+                    "global_id_a": 17,
+                    "global_id_b": 23,
+                    "iou": 0.9264069264069265
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 21,
+                    "iou": 0.8363636363636363
+                }
+            ],
+            "num_groups": 9,
+            "image_index": 5
+        },
+        {
+            "naive_map": 0.13988095238095238,
+            "fused_map": 0.259375,
+            "naive_count": 11,
+            "fused_count": 5,
+            "ground_truth_count": 8,
+            "naive_count_error": 3,
+            "fused_count_error": 3,
+            "num_merges": 15,
+            "merge_candidates": [
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 12,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 13,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 14,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 13,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 14,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 13,
+                    "global_id_b": 14,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 1,
+                    "global_id_b": 3,
+                    "iou": 0.9921135646687698
+                },
+                {
+                    "global_id_a": 2,
+                    "global_id_b": 9,
+                    "iou": 0.9837133550488599
+                },
+                {
+                    "global_id_a": 5,
+                    "global_id_b": 9,
+                    "iou": 0.975
+                },
+                {
+                    "global_id_a": 2,
+                    "global_id_b": 5,
+                    "iou": 0.963855421686747
+                },
+                {
+                    "global_id_a": 4,
+                    "global_id_b": 7,
+                    "iou": 0.9506172839506173
+                },
+                {
+                    "global_id_a": 9,
+                    "global_id_b": 10,
+                    "iou": 0.9506172839506173
+                },
+                {
+                    "global_id_a": 2,
+                    "global_id_b": 10,
+                    "iou": 0.9375
+                },
+                {
+                    "global_id_a": 5,
+                    "global_id_b": 10,
+                    "iou": 0.9375
+                },
+                {
+                    "global_id_a": 3,
+                    "global_id_b": 8,
+                    "iou": 0.8103975535168195
+                }
+            ],
+            "num_groups": 5,
+            "image_index": 6
+        },
+        {
+            "naive_map": 0.0337962962962963,
+            "fused_map": 0.019576719576719574,
+            "naive_count": 17,
+            "fused_count": 7,
+            "ground_truth_count": 18,
+            "naive_count_error": 1,
+            "fused_count_error": 11,
+            "num_merges": 34,
+            "merge_candidates": [
+                {
+                    "global_id_a": 3,
+                    "global_id_b": 7,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 4,
+                    "global_id_b": 8,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 5,
+                    "global_id_b": 9,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 13,
+                    "global_id_b": 16,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 13,
+                    "global_id_b": 22,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 13,
+                    "global_id_b": 24,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 16,
+                    "global_id_b": 22,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 17,
+                    "global_id_b": 25,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 22,
+                    "global_id_b": 24,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 21,
+                    "iou": 0.9989764585465711
+                },
+                {
+                    "global_id_a": 15,
+                    "global_id_b": 17,
+                    "iou": 0.9988137603795967
+                },
+                {
+                    "global_id_a": 15,
+                    "global_id_b": 25,
+                    "iou": 0.9988137603795967
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 20,
+                    "iou": 0.996551724137931
+                },
+                {
+                    "global_id_a": 15,
+                    "global_id_b": 23,
+                    "iou": 0.9964570416297609
+                },
+                {
+                    "global_id_a": 17,
+                    "global_id_b": 23,
+                    "iou": 0.9964497041420118
+                },
+                {
+                    "global_id_a": 23,
+                    "global_id_b": 25,
+                    "iou": 0.9964497041420118
+                },
+                {
+                    "global_id_a": 16,
+                    "global_id_b": 24,
+                    "iou": 0.9929577464788732
+                },
+                {
+                    "global_id_a": 2,
+                    "global_id_b": 14,
+                    "iou": 0.9879518072289156
+                },
+                {
+                    "global_id_a": 5,
+                    "global_id_b": 13,
+                    "iou": 0.9854014598540146
+                },
+                {
+                    "global_id_a": 5,
+                    "global_id_b": 16,
+                    "iou": 0.9854014598540146
+                },
+                {
+                    "global_id_a": 9,
+                    "global_id_b": 13,
+                    "iou": 0.9854014598540146
+                },
+                {
+                    "global_id_a": 9,
+                    "global_id_b": 16,
+                    "iou": 0.9836601307189542
+                },
+                {
+                    "global_id_a": 2,
+                    "global_id_b": 10,
+                    "iou": 0.9829059829059829
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 15,
+                    "iou": 0.9823321554770318
+                },
+                {
+                    "global_id_a": 20,
+                    "global_id_b": 23,
+                    "iou": 0.9789473684210527
+                },
+                {
+                    "global_id_a": 15,
+                    "global_id_b": 20,
+                    "iou": 0.9788732394366197
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 23,
+                    "iou": 0.9754385964912281
+                },
+                {
+                    "global_id_a": 10,
+                    "global_id_b": 14,
+                    "iou": 0.9705882352941176
+                },
+                {
+                    "global_id_a": 1,
+                    "global_id_b": 3,
+                    "iou": 0.965625
+                },
+                {
+                    "global_id_a": 2,
+                    "global_id_b": 6,
+                    "iou": 0.963855421686747
+                },
+                {
+                    "global_id_a": 6,
+                    "global_id_b": 10,
+                    "iou": 0.963855421686747
+                },
+                {
+                    "global_id_a": 6,
+                    "global_id_b": 14,
+                    "iou": 0.963855421686747
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 19,
+                    "iou": 0.7894736842105263
+                },
+                {
+                    "global_id_a": 10,
+                    "global_id_b": 19,
+                    "iou": 0.708
+                }
+            ],
+            "num_groups": 7,
+            "image_index": 7
+        },
+        {
+            "naive_map": 0.20503174603174604,
+            "fused_map": 0.36276190476190473,
+            "naive_count": 14,
+            "fused_count": 9,
+            "ground_truth_count": 15,
+            "naive_count_error": 1,
+            "fused_count_error": 6,
+            "num_merges": 22,
+            "merge_candidates": [
+                {
+                    "global_id_a": 7,
+                    "global_id_b": 9,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 10,
+                    "global_id_b": 17,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 15,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 13,
+                    "global_id_b": 20,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 16,
+                    "global_id_b": 22,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 6,
+                    "global_id_b": 8,
+                    "iou": 0.9981735159817352
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 18,
+                    "iou": 0.9943181818181818
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 14,
+                    "iou": 0.98989898989899
+                },
+                {
+                    "global_id_a": 7,
+                    "global_id_b": 12,
+                    "iou": 0.9887640449438202
+                },
+                {
+                    "global_id_a": 7,
+                    "global_id_b": 15,
+                    "iou": 0.9887640449438202
+                },
+                {
+                    "global_id_a": 9,
+                    "global_id_b": 12,
+                    "iou": 0.9887640449438202
+                },
+                {
+                    "global_id_a": 9,
+                    "global_id_b": 15,
+                    "iou": 0.9887640449438202
+                },
+                {
+                    "global_id_a": 3,
+                    "global_id_b": 6,
+                    "iou": 0.9880952380952381
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 21,
+                    "iou": 0.98
+                },
+                {
+                    "global_id_a": 1,
+                    "global_id_b": 5,
+                    "iou": 0.9795918367346939
+                },
+                {
+                    "global_id_a": 18,
+                    "global_id_b": 21,
+                    "iou": 0.9777777777777777
+                },
+                {
+                    "global_id_a": 13,
+                    "global_id_b": 16,
+                    "iou": 0.9772727272727273
+                },
+                {
+                    "global_id_a": 13,
+                    "global_id_b": 22,
+                    "iou": 0.9772727272727273
+                },
+                {
+                    "global_id_a": 16,
+                    "global_id_b": 20,
+                    "iou": 0.9772727272727273
+                },
+                {
+                    "global_id_a": 20,
+                    "global_id_b": 22,
+                    "iou": 0.9772727272727273
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 21,
+                    "iou": 0.9702970297029703
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 18,
+                    "iou": 0.9702970297029703
+                }
+            ],
+            "num_groups": 9,
+            "image_index": 8
+        },
+        {
+            "naive_map": 0.39338942307692315,
+            "fused_map": 0.48141233766233754,
+            "naive_count": 20,
+            "fused_count": 11,
+            "ground_truth_count": 16,
+            "naive_count_error": 4,
+            "fused_count_error": 5,
+            "num_merges": 37,
+            "merge_candidates": [
+                {
+                    "global_id_a": 9,
+                    "global_id_b": 21,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 10,
+                    "global_id_b": 22,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 13,
+                    "global_id_b": 25,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 26,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 15,
+                    "global_id_b": 19,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 16,
+                    "global_id_b": 28,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 17,
+                    "global_id_b": 30,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 27,
+                    "global_id_b": 32,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 29,
+                    "global_id_b": 33,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 4,
+                    "global_id_b": 6,
+                    "iou": 0.9950248756218906
+                },
+                {
+                    "global_id_a": 18,
+                    "global_id_b": 31,
+                    "iou": 0.9941690962099126
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 23,
+                    "iou": 0.9916434540389972
+                },
+                {
+                    "global_id_a": 13,
+                    "global_id_b": 17,
+                    "iou": 0.9869621903520208
+                },
+                {
+                    "global_id_a": 13,
+                    "global_id_b": 30,
+                    "iou": 0.9869621903520208
+                },
+                {
+                    "global_id_a": 17,
+                    "global_id_b": 25,
+                    "iou": 0.9869621903520208
+                },
+                {
+                    "global_id_a": 25,
+                    "global_id_b": 30,
+                    "iou": 0.9869621903520208
+                },
+                {
+                    "global_id_a": 2,
+                    "global_id_b": 5,
+                    "iou": 0.9847328244274809
+                },
+                {
+                    "global_id_a": 3,
+                    "global_id_b": 8,
+                    "iou": 0.9805194805194806
+                },
+                {
+                    "global_id_a": 15,
+                    "global_id_b": 32,
+                    "iou": 0.9612403100775194
+                },
+                {
+                    "global_id_a": 19,
+                    "global_id_b": 27,
+                    "iou": 0.9612403100775194
+                },
+                {
+                    "global_id_a": 19,
+                    "global_id_b": 32,
+                    "iou": 0.9612403100775194
+                },
+                {
+                    "global_id_a": 15,
+                    "global_id_b": 27,
+                    "iou": 0.9611111111111111
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 15,
+                    "iou": 0.9607843137254902
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 24,
+                    "iou": 0.9591836734693877
+                },
+                {
+                    "global_id_a": 24,
+                    "global_id_b": 27,
+                    "iou": 0.9591836734693877
+                },
+                {
+                    "global_id_a": 10,
+                    "global_id_b": 14,
+                    "iou": 0.9464285714285714
+                },
+                {
+                    "global_id_a": 10,
+                    "global_id_b": 26,
+                    "iou": 0.9464285714285714
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 22,
+                    "iou": 0.9464285714285714
+                },
+                {
+                    "global_id_a": 22,
+                    "global_id_b": 26,
+                    "iou": 0.9464285714285714
+                },
+                {
+                    "global_id_a": 8,
+                    "global_id_b": 20,
+                    "iou": 0.9375
+                },
+                {
+                    "global_id_a": 5,
+                    "global_id_b": 7,
+                    "iou": 0.9245283018867925
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 27,
+                    "iou": 0.9215686274509803
+                },
+                {
+                    "global_id_a": 15,
+                    "global_id_b": 24,
+                    "iou": 0.9215686274509803
+                },
+                {
+                    "global_id_a": 16,
+                    "global_id_b": 18,
+                    "iou": 0.775
+                },
+                {
+                    "global_id_a": 16,
+                    "global_id_b": 31,
+                    "iou": 0.775
+                },
+                {
+                    "global_id_a": 18,
+                    "global_id_b": 28,
+                    "iou": 0.775
+                },
+                {
+                    "global_id_a": 28,
+                    "global_id_b": 31,
+                    "iou": 0.775
+                }
+            ],
+            "num_groups": 11,
+            "image_index": 9
+        },
+        {
+            "naive_map": 0.25996825396825396,
+            "fused_map": 0.4887619047619046,
+            "naive_count": 15,
+            "fused_count": 7,
+            "ground_truth_count": 10,
+            "naive_count_error": 5,
+            "fused_count_error": 3,
+            "num_merges": 23,
+            "merge_candidates": [
+                {
+                    "global_id_a": 3,
+                    "global_id_b": 6,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 17,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 14,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 18,
+                    "global_id_b": 20,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 13,
+                    "global_id_b": 19,
+                    "iou": 0.9976019184652278
+                },
+                {
+                    "global_id_a": 15,
+                    "global_id_b": 21,
+                    "iou": 0.9957627118644068
+                },
+                {
+                    "global_id_a": 13,
+                    "global_id_b": 15,
+                    "iou": 0.9952038369304557
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 20,
+                    "iou": 0.9946808510638298
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 18,
+                    "iou": 0.9946808510638298
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 20,
+                    "iou": 0.9946808510638298
+                },
+                {
+                    "global_id_a": 10,
+                    "global_id_b": 16,
+                    "iou": 0.9942528735632183
+                },
+                {
+                    "global_id_a": 13,
+                    "global_id_b": 21,
+                    "iou": 0.9928057553956835
+                },
+                {
+                    "global_id_a": 15,
+                    "global_id_b": 19,
+                    "iou": 0.9928057553956835
+                },
+                {
+                    "global_id_a": 19,
+                    "global_id_b": 21,
+                    "iou": 0.9916142557651991
+                },
+                {
+                    "global_id_a": 5,
+                    "global_id_b": 8,
+                    "iou": 0.9879518072289156
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 18,
+                    "iou": 0.9861111111111112
+                },
+                {
+                    "global_id_a": 2,
+                    "global_id_b": 10,
+                    "iou": 0.9794871794871794
+                },
+                {
+                    "global_id_a": 4,
+                    "global_id_b": 7,
+                    "iou": 0.9752066115702479
+                },
+                {
+                    "global_id_a": 1,
+                    "global_id_b": 9,
+                    "iou": 0.9579439252336449
+                },
+                {
+                    "global_id_a": 8,
+                    "global_id_b": 12,
+                    "iou": 0.9431818181818182
+                },
+                {
+                    "global_id_a": 8,
+                    "global_id_b": 14,
+                    "iou": 0.9431818181818182
+                },
+                {
+                    "global_id_a": 5,
+                    "global_id_b": 14,
+                    "iou": 0.9318181818181818
+                },
+                {
+                    "global_id_a": 5,
+                    "global_id_b": 12,
+                    "iou": 0.9213483146067416
+                }
+            ],
+            "num_groups": 7,
+            "image_index": 10
+        },
+        {
+            "naive_map": 0.11771757654110596,
+            "fused_map": 0.3010204081632653,
+            "naive_count": 23,
+            "fused_count": 9,
+            "ground_truth_count": 14,
+            "naive_count_error": 9,
+            "fused_count_error": 5,
+            "num_merges": 41,
+            "merge_candidates": [
+                {
+                    "global_id_a": 7,
+                    "global_id_b": 10,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 8,
+                    "global_id_b": 11,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 18,
+                    "global_id_b": 23,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 20,
+                    "global_id_b": 30,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 22,
+                    "global_id_b": 32,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 29,
+                    "global_id_b": 33,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 19,
+                    "global_id_b": 25,
+                    "iou": 0.9978165938864629
+                },
+                {
+                    "global_id_a": 21,
+                    "global_id_b": 31,
+                    "iou": 0.9934497816593887
+                },
+                {
+                    "global_id_a": 16,
+                    "global_id_b": 28,
+                    "iou": 0.9933774834437086
+                },
+                {
+                    "global_id_a": 26,
+                    "global_id_b": 34,
+                    "iou": 0.9917808219178083
+                },
+                {
+                    "global_id_a": 4,
+                    "global_id_b": 15,
+                    "iou": 0.9867549668874173
+                },
+                {
+                    "global_id_a": 9,
+                    "global_id_b": 24,
+                    "iou": 0.9797979797979798
+                },
+                {
+                    "global_id_a": 25,
+                    "global_id_b": 29,
+                    "iou": 0.9790794979079498
+                },
+                {
+                    "global_id_a": 25,
+                    "global_id_b": 33,
+                    "iou": 0.9790794979079498
+                },
+                {
+                    "global_id_a": 19,
+                    "global_id_b": 29,
+                    "iou": 0.975
+                },
+                {
+                    "global_id_a": 19,
+                    "global_id_b": 33,
+                    "iou": 0.975
+                },
+                {
+                    "global_id_a": 15,
+                    "global_id_b": 27,
+                    "iou": 0.9666666666666667
+                },
+                {
+                    "global_id_a": 6,
+                    "global_id_b": 17,
+                    "iou": 0.9642857142857143
+                },
+                {
+                    "global_id_a": 1,
+                    "global_id_b": 5,
+                    "iou": 0.96045197740113
+                },
+                {
+                    "global_id_a": 2,
+                    "global_id_b": 6,
+                    "iou": 0.9512195121951219
+                },
+                {
+                    "global_id_a": 7,
+                    "global_id_b": 18,
+                    "iou": 0.9476744186046512
+                },
+                {
+                    "global_id_a": 7,
+                    "global_id_b": 23,
+                    "iou": 0.9476744186046512
+                },
+                {
+                    "global_id_a": 10,
+                    "global_id_b": 18,
+                    "iou": 0.9476744186046512
+                },
+                {
+                    "global_id_a": 10,
+                    "global_id_b": 23,
+                    "iou": 0.9476744186046512
+                },
+                {
+                    "global_id_a": 8,
+                    "global_id_b": 19,
+                    "iou": 0.9452054794520548
+                },
+                {
+                    "global_id_a": 8,
+                    "global_id_b": 25,
+                    "iou": 0.9452054794520548
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 19,
+                    "iou": 0.9452054794520548
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 25,
+                    "iou": 0.9452054794520548
+                },
+                {
+                    "global_id_a": 6,
+                    "global_id_b": 14,
+                    "iou": 0.9298245614035088
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 17,
+                    "iou": 0.9298245614035088
+                },
+                {
+                    "global_id_a": 3,
+                    "global_id_b": 12,
+                    "iou": 0.9285714285714286
+                },
+                {
+                    "global_id_a": 2,
+                    "global_id_b": 17,
+                    "iou": 0.9137931034482759
+                },
+                {
+                    "global_id_a": 31,
+                    "global_id_b": 34,
+                    "iou": 0.899171270718232
+                },
+                {
+                    "global_id_a": 21,
+                    "global_id_b": 26,
+                    "iou": 0.8617424242424242
+                },
+                {
+                    "global_id_a": 21,
+                    "global_id_b": 34,
+                    "iou": 0.8568738229755178
+                },
+                {
+                    "global_id_a": 26,
+                    "global_id_b": 31,
+                    "iou": 0.8568738229755178
+                },
+                {
+                    "global_id_a": 16,
+                    "global_id_b": 22,
+                    "iou": 0.8548387096774194
+                },
+                {
+                    "global_id_a": 16,
+                    "global_id_b": 32,
+                    "iou": 0.8548387096774194
+                },
+                {
+                    "global_id_a": 22,
+                    "global_id_b": 28,
+                    "iou": 0.8548387096774194
+                },
+                {
+                    "global_id_a": 28,
+                    "global_id_b": 32,
+                    "iou": 0.8548387096774194
+                },
+                {
+                    "global_id_a": 2,
+                    "global_id_b": 13,
+                    "iou": 0.6118421052631579
+                }
+            ],
+            "num_groups": 10,
+            "image_index": 11
+        },
+        {
+            "naive_map": 0.13333333333333333,
+            "fused_map": 0.20555555555555557,
+            "naive_count": 12,
+            "fused_count": 6,
+            "ground_truth_count": 12,
+            "naive_count_error": 0,
+            "fused_count_error": 6,
+            "num_merges": 31,
+            "merge_candidates": [
+                {
+                    "global_id_a": 6,
+                    "global_id_b": 10,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 7,
+                    "global_id_b": 11,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 9,
+                    "global_id_b": 13,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 21,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 15,
+                    "global_id_b": 19,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 17,
+                    "global_id_b": 20,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 18,
+                    "global_id_b": 22,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 2,
+                    "global_id_b": 3,
+                    "iou": 0.9985207100591716
+                },
+                {
+                    "global_id_a": 5,
+                    "global_id_b": 14,
+                    "iou": 0.9937722419928826
+                },
+                {
+                    "global_id_a": 5,
+                    "global_id_b": 16,
+                    "iou": 0.9908256880733946
+                },
+                {
+                    "global_id_a": 8,
+                    "global_id_b": 16,
+                    "iou": 0.9907407407407407
+                },
+                {
+                    "global_id_a": 3,
+                    "global_id_b": 6,
+                    "iou": 0.989451476793249
+                },
+                {
+                    "global_id_a": 3,
+                    "global_id_b": 10,
+                    "iou": 0.989451476793249
+                },
+                {
+                    "global_id_a": 2,
+                    "global_id_b": 6,
+                    "iou": 0.9873684210526316
+                },
+                {
+                    "global_id_a": 2,
+                    "global_id_b": 10,
+                    "iou": 0.9873684210526316
+                },
+                {
+                    "global_id_a": 5,
+                    "global_id_b": 8,
+                    "iou": 0.981651376146789
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 16,
+                    "iou": 0.972972972972973
+                },
+                {
+                    "global_id_a": 9,
+                    "global_id_b": 18,
+                    "iou": 0.9712230215827338
+                },
+                {
+                    "global_id_a": 9,
+                    "global_id_b": 22,
+                    "iou": 0.9712230215827338
+                },
+                {
+                    "global_id_a": 13,
+                    "global_id_b": 18,
+                    "iou": 0.9712230215827338
+                },
+                {
+                    "global_id_a": 13,
+                    "global_id_b": 22,
+                    "iou": 0.9712230215827338
+                },
+                {
+                    "global_id_a": 7,
+                    "global_id_b": 17,
+                    "iou": 0.9702970297029703
+                },
+                {
+                    "global_id_a": 7,
+                    "global_id_b": 20,
+                    "iou": 0.9702970297029703
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 17,
+                    "iou": 0.9702970297029703
+                },
+                {
+                    "global_id_a": 8,
+                    "global_id_b": 14,
+                    "iou": 0.963963963963964
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 20,
+                    "iou": 0.9517241379310345
+                },
+                {
+                    "global_id_a": 6,
+                    "global_id_b": 15,
+                    "iou": 0.8260869565217391
+                },
+                {
+                    "global_id_a": 6,
+                    "global_id_b": 19,
+                    "iou": 0.8260869565217391
+                },
+                {
+                    "global_id_a": 10,
+                    "global_id_b": 15,
+                    "iou": 0.8260869565217391
+                },
+                {
+                    "global_id_a": 10,
+                    "global_id_b": 19,
+                    "iou": 0.8260869565217391
+                },
+                {
+                    "global_id_a": 1,
+                    "global_id_b": 4,
+                    "iou": 0.6243523316062176
+                }
+            ],
+            "num_groups": 6,
+            "image_index": 12
+        },
+        {
+            "naive_map": 0.3324089614089614,
+            "fused_map": 0.3036507936507936,
+            "naive_count": 19,
+            "fused_count": 9,
+            "ground_truth_count": 15,
+            "naive_count_error": 4,
+            "fused_count_error": 6,
+            "num_merges": 28,
+            "merge_candidates": [
+                {
+                    "global_id_a": 13,
+                    "global_id_b": 23,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 15,
+                    "global_id_b": 17,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 23,
+                    "global_id_b": 25,
+                    "iou": 0.9991204925241864
+                },
+                {
+                    "global_id_a": 16,
+                    "global_id_b": 18,
+                    "iou": 0.9984326018808778
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 19,
+                    "iou": 0.9977426636568849
+                },
+                {
+                    "global_id_a": 13,
+                    "global_id_b": 16,
+                    "iou": 0.995475113122172
+                },
+                {
+                    "global_id_a": 16,
+                    "global_id_b": 23,
+                    "iou": 0.994199535962877
+                },
+                {
+                    "global_id_a": 18,
+                    "global_id_b": 25,
+                    "iou": 0.99375
+                },
+                {
+                    "global_id_a": 7,
+                    "global_id_b": 11,
+                    "iou": 0.9923954372623575
+                },
+                {
+                    "global_id_a": 16,
+                    "global_id_b": 25,
+                    "iou": 0.9921996879875195
+                },
+                {
+                    "global_id_a": 18,
+                    "global_id_b": 23,
+                    "iou": 0.9921996879875195
+                },
+                {
+                    "global_id_a": 7,
+                    "global_id_b": 15,
+                    "iou": 0.991304347826087
+                },
+                {
+                    "global_id_a": 7,
+                    "global_id_b": 17,
+                    "iou": 0.991304347826087
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 15,
+                    "iou": 0.991304347826087
+                },
+                {
+                    "global_id_a": 13,
+                    "global_id_b": 20,
+                    "iou": 0.990909090909091
+                },
+                {
+                    "global_id_a": 20,
+                    "global_id_b": 23,
+                    "iou": 0.990909090909091
+                },
+                {
+                    "global_id_a": 5,
+                    "global_id_b": 9,
+                    "iou": 0.9893617021276596
+                },
+                {
+                    "global_id_a": 16,
+                    "global_id_b": 20,
+                    "iou": 0.9864253393665159
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 17,
+                    "iou": 0.9862637362637363
+                },
+                {
+                    "global_id_a": 3,
+                    "global_id_b": 12,
+                    "iou": 0.9832635983263598
+                },
+                {
+                    "global_id_a": 4,
+                    "global_id_b": 8,
+                    "iou": 0.98
+                },
+                {
+                    "global_id_a": 6,
+                    "global_id_b": 10,
+                    "iou": 0.9695431472081218
+                },
+                {
+                    "global_id_a": 15,
+                    "global_id_b": 22,
+                    "iou": 0.9642857142857143
+                },
+                {
+                    "global_id_a": 17,
+                    "global_id_b": 22,
+                    "iou": 0.9642857142857143
+                },
+                {
+                    "global_id_a": 22,
+                    "global_id_b": 24,
+                    "iou": 0.9506172839506173
+                },
+                {
+                    "global_id_a": 15,
+                    "global_id_b": 24,
+                    "iou": 0.9166666666666666
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 21,
+                    "iou": 0.8863636363636364
+                },
+                {
+                    "global_id_a": 17,
+                    "global_id_b": 24,
+                    "iou": 0.8850574712643678
+                }
+            ],
+            "num_groups": 9,
+            "image_index": 13
+        },
+        {
+            "naive_map": 0.08038961038961039,
+            "fused_map": 0.05178571428571428,
+            "naive_count": 14,
+            "fused_count": 6,
+            "ground_truth_count": 14,
+            "naive_count_error": 0,
+            "fused_count_error": 8,
+            "num_merges": 26,
+            "merge_candidates": [
+                {
+                    "global_id_a": 5,
+                    "global_id_b": 6,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 8,
+                    "global_id_b": 15,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 9,
+                    "global_id_b": 16,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 10,
+                    "global_id_b": 12,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 18,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 13,
+                    "global_id_b": 20,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 17,
+                    "global_id_b": 19,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 3,
+                    "global_id_b": 7,
+                    "iou": 0.995249406175772
+                },
+                {
+                    "global_id_a": 5,
+                    "global_id_b": 12,
+                    "iou": 0.9939759036144579
+                },
+                {
+                    "global_id_a": 6,
+                    "global_id_b": 10,
+                    "iou": 0.9939759036144579
+                },
+                {
+                    "global_id_a": 6,
+                    "global_id_b": 12,
+                    "iou": 0.9939759036144579
+                },
+                {
+                    "global_id_a": 5,
+                    "global_id_b": 10,
+                    "iou": 0.9885057471264368
+                },
+                {
+                    "global_id_a": 2,
+                    "global_id_b": 4,
+                    "iou": 0.9881956155143339
+                },
+                {
+                    "global_id_a": 10,
+                    "global_id_b": 17,
+                    "iou": 0.9823008849557522
+                },
+                {
+                    "global_id_a": 10,
+                    "global_id_b": 19,
+                    "iou": 0.9823008849557522
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 17,
+                    "iou": 0.9823008849557522
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 19,
+                    "iou": 0.9823008849557522
+                },
+                {
+                    "global_id_a": 9,
+                    "global_id_b": 11,
+                    "iou": 0.9822222222222222
+                },
+                {
+                    "global_id_a": 9,
+                    "global_id_b": 18,
+                    "iou": 0.9822222222222222
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 16,
+                    "iou": 0.9822222222222222
+                },
+                {
+                    "global_id_a": 16,
+                    "global_id_b": 18,
+                    "iou": 0.9817444219066938
+                },
+                {
+                    "global_id_a": 7,
+                    "global_id_b": 14,
+                    "iou": 0.9482758620689655
+                },
+                {
+                    "global_id_a": 18,
+                    "global_id_b": 20,
+                    "iou": 0.6
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 13,
+                    "iou": 0.5794392523364486
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 20,
+                    "iou": 0.5794392523364486
+                },
+                {
+                    "global_id_a": 13,
+                    "global_id_b": 18,
+                    "iou": 0.5794392523364486
+                }
+            ],
+            "num_groups": 6,
+            "image_index": 14
+        },
+        {
+            "naive_map": 0.172,
+            "fused_map": 0.43,
+            "naive_count": 11,
+            "fused_count": 4,
+            "ground_truth_count": 5,
+            "naive_count_error": 6,
+            "fused_count_error": 1,
+            "num_merges": 33,
+            "merge_candidates": [
+                {
+                    "global_id_a": 6,
+                    "global_id_b": 13,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 7,
+                    "global_id_b": 14,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 8,
+                    "global_id_b": 11,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 9,
+                    "global_id_b": 12,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 10,
+                    "global_id_b": 17,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 15,
+                    "global_id_b": 18,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 16,
+                    "global_id_b": 19,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 7,
+                    "global_id_b": 17,
+                    "iou": 0.9941520467836257
+                },
+                {
+                    "global_id_a": 10,
+                    "global_id_b": 14,
+                    "iou": 0.9941520467836257
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 17,
+                    "iou": 0.9941520467836257
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 19,
+                    "iou": 0.9933110367892977
+                },
+                {
+                    "global_id_a": 6,
+                    "global_id_b": 14,
+                    "iou": 0.9923371647509579
+                },
+                {
+                    "global_id_a": 7,
+                    "global_id_b": 13,
+                    "iou": 0.9923371647509579
+                },
+                {
+                    "global_id_a": 13,
+                    "global_id_b": 14,
+                    "iou": 0.9923371647509579
+                },
+                {
+                    "global_id_a": 6,
+                    "global_id_b": 7,
+                    "iou": 0.9919786096256684
+                },
+                {
+                    "global_id_a": 8,
+                    "global_id_b": 15,
+                    "iou": 0.991304347826087
+                },
+                {
+                    "global_id_a": 8,
+                    "global_id_b": 18,
+                    "iou": 0.991304347826087
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 15,
+                    "iou": 0.991304347826087
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 18,
+                    "iou": 0.991304347826087
+                },
+                {
+                    "global_id_a": 4,
+                    "global_id_b": 6,
+                    "iou": 0.9911504424778761
+                },
+                {
+                    "global_id_a": 9,
+                    "global_id_b": 16,
+                    "iou": 0.9900990099009901
+                },
+                {
+                    "global_id_a": 9,
+                    "global_id_b": 19,
+                    "iou": 0.9900990099009901
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 16,
+                    "iou": 0.9900990099009901
+                },
+                {
+                    "global_id_a": 4,
+                    "global_id_b": 7,
+                    "iou": 0.9890710382513661
+                },
+                {
+                    "global_id_a": 1,
+                    "global_id_b": 3,
+                    "iou": 0.9880478087649402
+                },
+                {
+                    "global_id_a": 7,
+                    "global_id_b": 10,
+                    "iou": 0.9875518672199171
+                },
+                {
+                    "global_id_a": 2,
+                    "global_id_b": 6,
+                    "iou": 0.9821428571428571
+                },
+                {
+                    "global_id_a": 2,
+                    "global_id_b": 4,
+                    "iou": 0.9734513274336283
+                },
+                {
+                    "global_id_a": 2,
+                    "global_id_b": 7,
+                    "iou": 0.9734513274336283
+                },
+                {
+                    "global_id_a": 4,
+                    "global_id_b": 5,
+                    "iou": 0.9705882352941176
+                },
+                {
+                    "global_id_a": 5,
+                    "global_id_b": 10,
+                    "iou": 0.9705882352941176
+                },
+                {
+                    "global_id_a": 4,
+                    "global_id_b": 10,
+                    "iou": 0.9428571428571428
+                },
+                {
+                    "global_id_a": 5,
+                    "global_id_b": 7,
+                    "iou": 0.9428571428571428
+                }
+            ],
+            "num_groups": 4,
+            "image_index": 15
+        },
+        {
+            "naive_map": 0.1498888888888889,
+            "fused_map": 0.35571428571428565,
+            "naive_count": 13,
+            "fused_count": 7,
+            "ground_truth_count": 10,
+            "naive_count_error": 3,
+            "fused_count_error": 3,
+            "num_merges": 28,
+            "merge_candidates": [
+                {
+                    "global_id_a": 1,
+                    "global_id_b": 2,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 3,
+                    "global_id_b": 5,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 6,
+                    "global_id_b": 14,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 9,
+                    "global_id_b": 17,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 10,
+                    "global_id_b": 18,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 21,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 7,
+                    "global_id_b": 15,
+                    "iou": 0.9987293519695044
+                },
+                {
+                    "global_id_a": 13,
+                    "global_id_b": 22,
+                    "iou": 0.998
+                },
+                {
+                    "global_id_a": 2,
+                    "global_id_b": 4,
+                    "iou": 0.9972972972972973
+                },
+                {
+                    "global_id_a": 10,
+                    "global_id_b": 22,
+                    "iou": 0.9939577039274925
+                },
+                {
+                    "global_id_a": 18,
+                    "global_id_b": 22,
+                    "iou": 0.9939577039274925
+                },
+                {
+                    "global_id_a": 20,
+                    "global_id_b": 23,
+                    "iou": 0.9918478260869565
+                },
+                {
+                    "global_id_a": 10,
+                    "global_id_b": 13,
+                    "iou": 0.9909365558912386
+                },
+                {
+                    "global_id_a": 13,
+                    "global_id_b": 18,
+                    "iou": 0.9909365558912386
+                },
+                {
+                    "global_id_a": 6,
+                    "global_id_b": 9,
+                    "iou": 0.9882352941176471
+                },
+                {
+                    "global_id_a": 6,
+                    "global_id_b": 17,
+                    "iou": 0.9882352941176471
+                },
+                {
+                    "global_id_a": 9,
+                    "global_id_b": 14,
+                    "iou": 0.9882352941176471
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 17,
+                    "iou": 0.9882352941176471
+                },
+                {
+                    "global_id_a": 9,
+                    "global_id_b": 12,
+                    "iou": 0.9722222222222222
+                },
+                {
+                    "global_id_a": 9,
+                    "global_id_b": 21,
+                    "iou": 0.9722222222222222
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 17,
+                    "iou": 0.9722222222222222
+                },
+                {
+                    "global_id_a": 17,
+                    "global_id_b": 21,
+                    "iou": 0.9722222222222222
+                },
+                {
+                    "global_id_a": 16,
+                    "global_id_b": 19,
+                    "iou": 0.9717514124293786
+                },
+                {
+                    "global_id_a": 8,
+                    "global_id_b": 16,
+                    "iou": 0.9393939393939394
+                },
+                {
+                    "global_id_a": 8,
+                    "global_id_b": 11,
+                    "iou": 0.9230769230769231
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 19,
+                    "iou": 0.9
+                },
+                {
+                    "global_id_a": 8,
+                    "global_id_b": 19,
+                    "iou": 0.8372093023255814
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 16,
+                    "iou": 0.8372093023255814
+                }
+            ],
+            "num_groups": 7,
+            "image_index": 16
+        },
+        {
+            "naive_map": 0.24079670329670327,
+            "fused_map": 0.4221049783549783,
+            "naive_count": 22,
+            "fused_count": 11,
+            "ground_truth_count": 14,
+            "naive_count_error": 8,
+            "fused_count_error": 3,
+            "num_merges": 37,
+            "merge_candidates": [
+                {
+                    "global_id_a": 4,
+                    "global_id_b": 9,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 13,
+                    "global_id_b": 23,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 17,
+                    "global_id_b": 27,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 20,
+                    "global_id_b": 30,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 21,
+                    "global_id_b": 31,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 29,
+                    "global_id_b": 32,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 18,
+                    "global_id_b": 28,
+                    "iou": 0.9964994165694282
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 24,
+                    "iou": 0.9949109414758269
+                },
+                {
+                    "global_id_a": 15,
+                    "global_id_b": 25,
+                    "iou": 0.994750656167979
+                },
+                {
+                    "global_id_a": 21,
+                    "global_id_b": 28,
+                    "iou": 0.9941176470588236
+                },
+                {
+                    "global_id_a": 28,
+                    "global_id_b": 31,
+                    "iou": 0.9941176470588236
+                },
+                {
+                    "global_id_a": 18,
+                    "global_id_b": 21,
+                    "iou": 0.9921722113502935
+                },
+                {
+                    "global_id_a": 18,
+                    "global_id_b": 31,
+                    "iou": 0.9921722113502935
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 22,
+                    "iou": 0.992
+                },
+                {
+                    "global_id_a": 22,
+                    "global_id_b": 26,
+                    "iou": 0.9916666666666667
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 26,
+                    "iou": 0.9915966386554622
+                },
+                {
+                    "global_id_a": 16,
+                    "global_id_b": 26,
+                    "iou": 0.9915966386554622
+                },
+                {
+                    "global_id_a": 1,
+                    "global_id_b": 5,
+                    "iou": 0.9907834101382489
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 16,
+                    "iou": 0.987012987012987
+                },
+                {
+                    "global_id_a": 16,
+                    "global_id_b": 22,
+                    "iou": 0.9833333333333333
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 18,
+                    "iou": 0.9828080229226361
+                },
+                {
+                    "global_id_a": 24,
+                    "global_id_b": 28,
+                    "iou": 0.9827089337175793
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 28,
+                    "iou": 0.9770773638968482
+                },
+                {
+                    "global_id_a": 18,
+                    "global_id_b": 24,
+                    "iou": 0.9770773638968482
+                },
+                {
+                    "global_id_a": 6,
+                    "global_id_b": 10,
+                    "iou": 0.9719298245614035
+                },
+                {
+                    "global_id_a": 3,
+                    "global_id_b": 12,
+                    "iou": 0.9590163934426229
+                },
+                {
+                    "global_id_a": 17,
+                    "global_id_b": 20,
+                    "iou": 0.9583333333333334
+                },
+                {
+                    "global_id_a": 17,
+                    "global_id_b": 30,
+                    "iou": 0.9583333333333334
+                },
+                {
+                    "global_id_a": 20,
+                    "global_id_b": 27,
+                    "iou": 0.9583333333333334
+                },
+                {
+                    "global_id_a": 27,
+                    "global_id_b": 30,
+                    "iou": 0.9583333333333334
+                },
+                {
+                    "global_id_a": 7,
+                    "global_id_b": 11,
+                    "iou": 0.9552238805970149
+                },
+                {
+                    "global_id_a": 7,
+                    "global_id_b": 19,
+                    "iou": 0.9444444444444444
+                },
+                {
+                    "global_id_a": 3,
+                    "global_id_b": 8,
+                    "iou": 0.9393939393939394
+                },
+                {
+                    "global_id_a": 8,
+                    "global_id_b": 16,
+                    "iou": 0.9117647058823529
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 19,
+                    "iou": 0.8846153846153846
+                },
+                {
+                    "global_id_a": 3,
+                    "global_id_b": 16,
+                    "iou": 0.8611111111111112
+                },
+                {
+                    "global_id_a": 8,
+                    "global_id_b": 12,
+                    "iou": 0.8611111111111112
+                }
+            ],
+            "num_groups": 11,
+            "image_index": 17
+        },
+        {
+            "naive_map": 0.11567841880341881,
+            "fused_map": 0.38898809523809524,
+            "naive_count": 17,
+            "fused_count": 8,
+            "ground_truth_count": 12,
+            "naive_count_error": 5,
+            "fused_count_error": 4,
+            "num_merges": 43,
+            "merge_candidates": [
+                {
+                    "global_id_a": 6,
+                    "global_id_b": 10,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 7,
+                    "global_id_b": 11,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 13,
+                    "global_id_b": 23,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 15,
+                    "global_id_b": 20,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 17,
+                    "global_id_b": 26,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 18,
+                    "global_id_b": 22,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 16,
+                    "global_id_b": 21,
+                    "iou": 0.995575221238938
+                },
+                {
+                    "global_id_a": 27,
+                    "global_id_b": 30,
+                    "iou": 0.9949622166246851
+                },
+                {
+                    "global_id_a": 25,
+                    "global_id_b": 29,
+                    "iou": 0.9941860465116279
+                },
+                {
+                    "global_id_a": 16,
+                    "global_id_b": 25,
+                    "iou": 0.9941520467836257
+                },
+                {
+                    "global_id_a": 21,
+                    "global_id_b": 29,
+                    "iou": 0.9919786096256684
+                },
+                {
+                    "global_id_a": 6,
+                    "global_id_b": 20,
+                    "iou": 0.9913793103448276
+                },
+                {
+                    "global_id_a": 10,
+                    "global_id_b": 15,
+                    "iou": 0.9913793103448276
+                },
+                {
+                    "global_id_a": 10,
+                    "global_id_b": 20,
+                    "iou": 0.9913793103448276
+                },
+                {
+                    "global_id_a": 5,
+                    "global_id_b": 9,
+                    "iou": 0.9903846153846154
+                },
+                {
+                    "global_id_a": 18,
+                    "global_id_b": 27,
+                    "iou": 0.9894736842105263
+                },
+                {
+                    "global_id_a": 18,
+                    "global_id_b": 30,
+                    "iou": 0.9894736842105263
+                },
+                {
+                    "global_id_a": 22,
+                    "global_id_b": 27,
+                    "iou": 0.9894736842105263
+                },
+                {
+                    "global_id_a": 22,
+                    "global_id_b": 30,
+                    "iou": 0.9894736842105263
+                },
+                {
+                    "global_id_a": 16,
+                    "global_id_b": 29,
+                    "iou": 0.9883720930232558
+                },
+                {
+                    "global_id_a": 21,
+                    "global_id_b": 25,
+                    "iou": 0.9883720930232558
+                },
+                {
+                    "global_id_a": 3,
+                    "global_id_b": 6,
+                    "iou": 0.9841269841269841
+                },
+                {
+                    "global_id_a": 19,
+                    "global_id_b": 28,
+                    "iou": 0.9836065573770492
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 19,
+                    "iou": 0.9833333333333333
+                },
+                {
+                    "global_id_a": 24,
+                    "global_id_b": 28,
+                    "iou": 0.9833333333333333
+                },
+                {
+                    "global_id_a": 1,
+                    "global_id_b": 5,
+                    "iou": 0.9805825242718447
+                },
+                {
+                    "global_id_a": 6,
+                    "global_id_b": 15,
+                    "iou": 0.9803921568627451
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 15,
+                    "iou": 0.9714285714285714
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 28,
+                    "iou": 0.9672131147540983
+                },
+                {
+                    "global_id_a": 4,
+                    "global_id_b": 8,
+                    "iou": 0.9516728624535316
+                },
+                {
+                    "global_id_a": 19,
+                    "global_id_b": 24,
+                    "iou": 0.9516129032258065
+                },
+                {
+                    "global_id_a": 7,
+                    "global_id_b": 16,
+                    "iou": 0.9454545454545454
+                },
+                {
+                    "global_id_a": 7,
+                    "global_id_b": 21,
+                    "iou": 0.9454545454545454
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 16,
+                    "iou": 0.9454545454545454
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 21,
+                    "iou": 0.9454545454545454
+                },
+                {
+                    "global_id_a": 3,
+                    "global_id_b": 12,
+                    "iou": 0.9444444444444444
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 24,
+                    "iou": 0.9402985074626866
+                },
+                {
+                    "global_id_a": 3,
+                    "global_id_b": 15,
+                    "iou": 0.918918918918919
+                },
+                {
+                    "global_id_a": 6,
+                    "global_id_b": 12,
+                    "iou": 0.918918918918919
+                },
+                {
+                    "global_id_a": 13,
+                    "global_id_b": 17,
+                    "iou": 0.8979591836734694
+                },
+                {
+                    "global_id_a": 13,
+                    "global_id_b": 26,
+                    "iou": 0.8979591836734694
+                },
+                {
+                    "global_id_a": 17,
+                    "global_id_b": 23,
+                    "iou": 0.8979591836734694
+                },
+                {
+                    "global_id_a": 23,
+                    "global_id_b": 26,
+                    "iou": 0.8979591836734694
+                }
+            ],
+            "num_groups": 8,
+            "image_index": 18
+        },
+        {
+            "naive_map": 0.2959800882877806,
+            "fused_map": 0.3841636141636142,
+            "naive_count": 16,
+            "fused_count": 10,
+            "ground_truth_count": 13,
+            "naive_count_error": 3,
+            "fused_count_error": 3,
+            "num_merges": 31,
+            "merge_candidates": [
+                {
+                    "global_id_a": 2,
+                    "global_id_b": 10,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 4,
+                    "global_id_b": 7,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 5,
+                    "global_id_b": 8,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 6,
+                    "global_id_b": 9,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 12,
+                    "global_id_b": 20,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 24,
+                    "global_id_b": 27,
+                    "iou": 1.0
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 17,
+                    "iou": 0.9956709956709957
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 19,
+                    "iou": 0.9936908517350158
+                },
+                {
+                    "global_id_a": 16,
+                    "global_id_b": 22,
+                    "iou": 0.9935897435897436
+                },
+                {
+                    "global_id_a": 18,
+                    "global_id_b": 26,
+                    "iou": 0.9918032786885246
+                },
+                {
+                    "global_id_a": 19,
+                    "global_id_b": 22,
+                    "iou": 0.9904761904761905
+                },
+                {
+                    "global_id_a": 25,
+                    "global_id_b": 28,
+                    "iou": 0.9900990099009901
+                },
+                {
+                    "global_id_a": 13,
+                    "global_id_b": 21,
+                    "iou": 0.9859154929577465
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 16,
+                    "iou": 0.9854651162790697
+                },
+                {
+                    "global_id_a": 6,
+                    "global_id_b": 14,
+                    "iou": 0.9842105263157894
+                },
+                {
+                    "global_id_a": 6,
+                    "global_id_b": 17,
+                    "iou": 0.9842105263157894
+                },
+                {
+                    "global_id_a": 9,
+                    "global_id_b": 14,
+                    "iou": 0.9842105263157894
+                },
+                {
+                    "global_id_a": 11,
+                    "global_id_b": 22,
+                    "iou": 0.9841269841269841
+                },
+                {
+                    "global_id_a": 16,
+                    "global_id_b": 19,
+                    "iou": 0.9841269841269841
+                },
+                {
+                    "global_id_a": 15,
+                    "global_id_b": 23,
+                    "iou": 0.9747899159663865
+                },
+                {
+                    "global_id_a": 15,
+                    "global_id_b": 18,
+                    "iou": 0.9736842105263158
+                },
+                {
+                    "global_id_a": 15,
+                    "global_id_b": 26,
+                    "iou": 0.9672131147540983
+                },
+                {
+                    "global_id_a": 9,
+                    "global_id_b": 17,
+                    "iou": 0.9595141700404858
+                },
+                {
+                    "global_id_a": 23,
+                    "global_id_b": 26,
+                    "iou": 0.9586776859504132
+                },
+                {
+                    "global_id_a": 18,
+                    "global_id_b": 23,
+                    "iou": 0.9508196721311475
+                },
+                {
+                    "global_id_a": 17,
+                    "global_id_b": 28,
+                    "iou": 0.8780068728522337
+                },
+                {
+                    "global_id_a": 3,
+                    "global_id_b": 16,
+                    "iou": 0.8
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 25,
+                    "iou": 0.7407407407407407
+                },
+                {
+                    "global_id_a": 3,
+                    "global_id_b": 11,
+                    "iou": 0.7380952380952381
+                },
+                {
+                    "global_id_a": 14,
+                    "global_id_b": 28,
+                    "iou": 0.7352941176470589
+                },
+                {
+                    "global_id_a": 17,
+                    "global_id_b": 25,
+                    "iou": 0.7352941176470589
+                }
+            ],
+            "num_groups": 10,
+            "image_index": 19
+        }
+    ]
+}
