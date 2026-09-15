@@ -1,117 +1,274 @@
-import os
+# train.py
 
+import os
+import random
+
+import numpy as np
 import torch
 from torch.utils.data import DataLoader
 
-from dataset_pytorch import SyntheticSegmentationDataset
+from dataset_bbbc038 import BBBC038Dataset
 from unet import UNet
-from cross_entropy import boundary_cross_entropy_loss
+from cross_entropy import binary_cross_entropy_loss
 
-DATA_DIR = "data/synthetic"
+
+DATA_ROOT = "data/BBBC038"
 
 BATCH_SIZE = 4
-EPOCHS = 10
+EPOCHS = 20
 LEARNING_RATE = 1e-3
 
-BOUNDARY_WIDTH = 1
+CHECKPOINT_PATH = (
+    "checkpoints/unet_baseline_bbbc038.pth"
+)
 
-NUM_CLASSES = 3
-
-CLASS_WEIGHTS = [
-    0.5,  # background
-    1.0,  # interior
-    2.0,  # boundary
-]
-
-CHECKPOINT_PATH = "checkpoints/unet_boundary.pth"
-
+SEED = 42
 
 DEVICE = torch.device(
-    "cuda" if torch.cuda.is_available() else "cpu"
-)
-
-print(f"Device: {DEVICE}")
-print(f"Dataset: {DATA_DIR}")
-print(f"Boundary width: {BOUNDARY_WIDTH}")
-print(f"Classes: {NUM_CLASSES}")
-print(f"Class weights: {CLASS_WEIGHTS}")
-
-dataset = SyntheticSegmentationDataset(
-    root_dir=DATA_DIR,
-    boundary_width=BOUNDARY_WIDTH
+    "cuda"
+    if torch.cuda.is_available()
+    else "cpu"
 )
 
 
-loader = DataLoader(
-    dataset,
-    batch_size=BATCH_SIZE,
-    shuffle=True
-)
+def set_seed(seed: int) -> None:
+
+    random.seed(seed)
+    np.random.seed(seed)
+
+    torch.manual_seed(seed)
+
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
 
 
-print(
-    f"Quantidade de amostras: {len(dataset)}"
-)
+def main():
 
-model = UNet(
-    in_channels=1,
-    num_classes=NUM_CLASSES
-)
+    set_seed(SEED)
 
-model = model.to(DEVICE)
-
-criterion = boundary_cross_entropy_loss(
-    class_weights=CLASS_WEIGHTS,
-    device=DEVICE
-)
-
-optimizer = torch.optim.Adam(
-    model.parameters(),
-    lr=LEARNING_RATE
-)
-
-for epoch in range(EPOCHS):
-
-    model.train()
-
-    total_loss = 0.0
-
-    for batch in loader:
-
-        images = batch["image"].to(DEVICE)
-
-        masks = batch["boundary_mask"].to(DEVICE)
-
-        predictions = model(images)
-
-        loss = criterion(
-            predictions,
-            masks
-        )
-
-        optimizer.zero_grad()
-
-        loss.backward()
-
-        optimizer.step()
-
-        total_loss += loss.item()
-
-    average_loss = total_loss / len(loader)
+    print("=" * 70)
+    print("BBBC038 - BASELINE SEMÂNTICO")
+    print("=" * 70)
 
     print(
-        f"Epoch {epoch + 1}/{EPOCHS} "
-        f"- Loss: {average_loss:.4f}"
+        f"Device: {DEVICE}"
     )
 
-os.makedirs(
-    os.path.dirname(CHECKPOINT_PATH),
-    exist_ok=True
-)
+    print(
+        f"Batch size: {BATCH_SIZE}"
+    )
 
-torch.save(
-    model.state_dict(),
-    CHECKPOINT_PATH
-)
+    print(
+        f"Epochs: {EPOCHS}"
+    )
 
-print(f"Modelo salvo em {CHECKPOINT_PATH}")
+    print(
+        f"Learning rate: {LEARNING_RATE}"
+    )
+
+    # ---------------------------------------------------------
+    # Dataset
+    # ---------------------------------------------------------
+
+    train_dataset = BBBC038Dataset(
+        root_dir=DATA_ROOT,
+        split="train"
+    )
+
+    val_dataset = BBBC038Dataset(
+        root_dir=DATA_ROOT,
+        split="validation"
+    )
+
+    print(
+        f"\nTreino: {len(train_dataset)} imagens"
+    )
+
+    print(
+        f"Validação: {len(val_dataset)} imagens"
+    )
+
+    train_loader = DataLoader(
+        train_dataset,
+        batch_size=BATCH_SIZE,
+        shuffle=True,
+        num_workers=0,
+        pin_memory=torch.cuda.is_available()
+    )
+
+    val_loader = DataLoader(
+        val_dataset,
+        batch_size=BATCH_SIZE,
+        shuffle=False,
+        num_workers=0,
+        pin_memory=torch.cuda.is_available()
+    )
+
+    # ---------------------------------------------------------
+    # Modelo
+    # ---------------------------------------------------------
+
+    model = UNet(
+        in_channels=1,
+        num_classes=1
+    )
+
+    model = model.to(
+        DEVICE
+    )
+
+    # ---------------------------------------------------------
+    # Loss
+    # ---------------------------------------------------------
+
+    criterion = binary_cross_entropy_loss()
+
+    # ---------------------------------------------------------
+    # Otimizador
+    # ---------------------------------------------------------
+
+    optimizer = torch.optim.Adam(
+        model.parameters(),
+        lr=LEARNING_RATE
+    )
+
+    # ---------------------------------------------------------
+    # Treinamento
+    # ---------------------------------------------------------
+
+    best_val_loss = float("inf")
+
+    for epoch in range(EPOCHS):
+
+        model.train()
+
+        train_loss = 0.0
+
+        for batch in train_loader:
+
+            images = batch[
+                "image"
+            ].to(
+                DEVICE
+            )
+
+            masks = batch[
+                "semantic_mask"
+            ].to(
+                DEVICE
+            )
+
+            masks = masks.unsqueeze(
+                1
+            )
+
+            predictions = model(
+                images
+            )
+
+            loss = criterion(
+                predictions,
+                masks
+            )
+
+            optimizer.zero_grad()
+
+            loss.backward()
+
+            optimizer.step()
+
+            train_loss += loss.item()
+
+        train_loss /= len(
+            train_loader
+        )
+
+        # -----------------------------------------------------
+        # Validação
+        # -----------------------------------------------------
+
+        model.eval()
+
+        val_loss = 0.0
+
+        with torch.no_grad():
+
+            for batch in val_loader:
+
+                images = batch[
+                    "image"
+                ].to(
+                    DEVICE
+                )
+
+                masks = batch[
+                    "semantic_mask"
+                ].to(
+                    DEVICE
+                )
+
+                masks = masks.unsqueeze(
+                    1
+                )
+
+                predictions = model(
+                    images
+                )
+
+                loss = criterion(
+                    predictions,
+                    masks
+                )
+
+                val_loss += loss.item()
+
+        val_loss /= len(
+            val_loader
+        )
+
+        print(
+            f"Epoch "
+            f"{epoch + 1:02d}/{EPOCHS} "
+            f"- "
+            f"Train Loss: {train_loss:.4f} "
+            f"- "
+            f"Val Loss: {val_loss:.4f}"
+        )
+
+        # -----------------------------------------------------
+        # Salva melhor modelo
+        # -----------------------------------------------------
+
+        if val_loss < best_val_loss:
+
+            best_val_loss = val_loss
+
+            os.makedirs(
+                os.path.dirname(
+                    CHECKPOINT_PATH
+                ),
+                exist_ok=True
+            )
+
+            torch.save(
+                model.state_dict(),
+                CHECKPOINT_PATH
+            )
+
+            print(
+                f"  Melhor modelo salvo em "
+                f"{CHECKPOINT_PATH}"
+            )
+
+    print(
+        "\nTreinamento concluído."
+    )
+
+    print(
+        f"Melhor validation loss: "
+        f"{best_val_loss:.4f}"
+    )
+
+
+if __name__ == "__main__":
+    main()

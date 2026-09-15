@@ -1,3 +1,5 @@
+# evaluate.py
+
 import json
 from pathlib import Path
 
@@ -7,55 +9,69 @@ import torch
 from torch.utils.data import DataLoader
 
 from connected_components import connected_components
-from dataset_pytorch import SyntheticSegmentationDataset
-from instance_metrics import (
-    count_error,
-    mean_average_precision,
-)
-from semantic_metrics import (
-    dice_score,
-    iou_score,
-)
+from dataset_bbbc038 import BBBC038Dataset
+from instance_metrics import count_error, mean_average_precision
+from semantic_metrics import dice_score, iou_score
 from unet import UNet
-from watershed import watershed_from_logits
 
-DATA_DIR = "data/synthetic"
 
-BASELINE_CHECKPOINT = "checkpoints/unet_baseline.pth"
-BOUNDARY_CHECKPOINT = "checkpoints/unet_boundary.pth"
+# ============================================================
+# CONFIGURAÇÃO
+# ============================================================
 
-OUTPUT_DIR = Path("output_dir/evaluation")
+DATA_ROOT = "data/BBBC038"
+
+CHECKPOINT_PATH = "checkpoints/unet_baseline_bbbc038.pth"
+
+SPLIT_FILE = "data/BBBC038/splits.json"
+
+OUTPUT_DIR = Path("output_dir/evaluation_bbbc038")
 
 BATCH_SIZE = 4
 
-INTERIOR_THRESHOLD = 0.5
 FOREGROUND_THRESHOLD = 0.5
-MIN_MARKER_SIZE = 10
 
 DEVICE = torch.device(
     "cuda" if torch.cuda.is_available() else "cpu"
 )
 
-dataset = SyntheticSegmentationDataset(
-    DATA_DIR
+
+# ============================================================
+# DATASET
+# ============================================================
+
+dataset = BBBC038Dataset(
+    root_dir=DATA_ROOT,
+    split="test",
+    split_file=SPLIT_FILE,
 )
 
 loader = DataLoader(
     dataset,
     batch_size=BATCH_SIZE,
-    shuffle=False
+    shuffle=False,
 )
 
-def load_model(checkpoint_path, num_classes):
+
+# ============================================================
+# MODELO
+# ============================================================
+
+def load_model():
+    """
+    Cria a mesma arquitetura utilizada no treinamento
+    e carrega o melhor checkpoint salvo.
+    """
 
     model = UNet(
         in_channels=1,
-        num_classes=num_classes
+        num_classes=1,
     )
 
     checkpoint = torch.load(
-        checkpoint_path,
-        map_location=DEVICE
+        CHECKPOINT_PATH,
+        map_location=DEVICE,
+        weights_only=True,
     )
 
     model.load_state_dict(checkpoint)
@@ -66,20 +82,62 @@ def load_model(checkpoint_path, num_classes):
     return model
 
 
-def probability_to_logit(probability):
+# ============================================================
+# MÉTRICAS SEMÂNTICAS
+# ============================================================
 
-    probability = probability.clamp(
-        min=1e-7,
-        max=1.0 - 1e-7
+def binary_dice(prediction, target):
+    """
+    Calcula Dice para máscaras binárias.
+    """
+
+    prediction = prediction.astype(bool)
+    target = target.astype(bool)
+
+    intersection = np.logical_and(
+        prediction,
+        target,
+    ).sum()
+
+    denominator = prediction.sum() + target.sum()
+
+    if denominator == 0:
+        return 1.0
+
+    return (
+        2.0 * intersection / denominator
     )
 
-    return torch.log(
-        probability / (1.0 - probability)
-    )
+
+def binary_iou(prediction, target):
+    """
+    Calcula IoU para máscaras binárias.
+    """
+
+    prediction = prediction.astype(bool)
+    target = target.astype(bool)
+
+    intersection = np.logical_and(
+        prediction,
+        target,
+    ).sum()
+
+    union = np.logical_or(
+        prediction,
+        target,
+    ).sum()
+
+    if union == 0:
+        return 1.0
+
+    return intersection / union
 
 
-def empty_results():
+# ============================================================
+# RESULTADOS
+# ============================================================
 
+def create_results():
     return {
         "dice": [],
         "iou": [],
@@ -90,7 +148,16 @@ def empty_results():
     }
 
 
-def update_threshold_results(results, ap_results):
+def update_threshold_results(
+    results,
+    ap_results,
+):
+    """
+    Armazena o AP de cada limiar de IoU.
+
+    Os limiares esperados são:
+    0.50, 0.55, ..., 0.95
+    """
 
     for threshold, ap in ap_results.items():
 
@@ -104,41 +171,57 @@ def update_threshold_results(results, ap_results):
         )
 
 
+# ============================================================
+# RESUMO
+# ============================================================
+
 def summarize_results(results):
 
     mean_map_by_threshold = {}
 
-    for threshold, values in results["map_by_threshold"].items():
+    for threshold, values in results[
+        "map_by_threshold"
+    ].items():
 
         mean_map_by_threshold[threshold] = float(
             np.mean(values)
         )
 
     return {
-        "dice": float(np.mean(results["dice"])),
-        "iou": float(np.mean(results["iou"])),
-        "map": float(np.mean(results["map"])),
+        "dice": float(
+            np.mean(results["dice"])
+        ),
+        "iou": float(
+            np.mean(results["iou"])
+        ),
+        "map": float(
+            np.mean(results["map"])
+        ),
         "count_error": float(
             np.mean(results["count_error"])
         ),
         "map_by_threshold": mean_map_by_threshold,
     }
 
-def evaluate_baseline(model):
 
-    results = empty_results()
+# ============================================================
+# AVALIAÇÃO
+# ============================================================
+
+def evaluate(model):
+
+    results = create_results()
 
     with torch.no_grad():
 
-        for batch in loader:
+        for batch_index, batch in enumerate(loader):
 
             images = batch["image"].to(DEVICE)
 
             semantic_masks = (
                 batch["semantic_mask"]
-                .to(DEVICE)
-                .unsqueeze(1)
-                .float()
+                .cpu()
+                .numpy()
             )
 
             gt_instance_masks = (
@@ -146,6 +229,10 @@ def evaluate_baseline(model):
                 .cpu()
                 .numpy()
             )
+
+            # ------------------------------------------------
+            # Predição semântica
+            # ------------------------------------------------
 
             logits = model(images)
 
@@ -154,51 +241,84 @@ def evaluate_baseline(model):
             )
 
             binary_predictions = (
-                probabilities >= 0.5
+                probabilities
+                >= FOREGROUND_THRESHOLD
             )
 
-            dice = dice_score(
-                logits,
-                semantic_masks
-            )
-
-            iou = iou_score(
-                logits,
-                semantic_masks
-            )
-
-            results["dice"].append(float(dice))
-            results["iou"].append(float(iou))
+            # ------------------------------------------------
+            # Avaliação de cada imagem
+            # ------------------------------------------------
 
             for i in range(images.shape[0]):
 
-                binary_mask = (
+                prediction = (
                     binary_predictions[i, 0]
                     .cpu()
                     .numpy()
+                    .astype(np.uint8)
                 )
 
-                foreground_probability = (
+                probability = (
                     probabilities[i, 0]
                     .cpu()
                     .numpy()
                 )
 
-                gt_instance_mask = (
-                    gt_instance_masks[i]
+                gt_semantic = (
+                    semantic_masks[i]
+                    .astype(np.uint8)
                 )
 
-                pred_instance_mask, _ = (
+                gt_instance = (
+                    gt_instance_masks[i]
+                    .astype(np.int32)
+                )
+
+                # ====================================================
+                # Dice
+                # ====================================================
+
+                dice = binary_dice(
+                    prediction,
+                    gt_semantic,
+                )
+
+                # ====================================================
+                # IoU
+                # ====================================================
+
+                iou = binary_iou(
+                    prediction,
+                    gt_semantic,
+                )
+
+                results["dice"].append(
+                    float(dice)
+                )
+
+                results["iou"].append(
+                    float(iou)
+                )
+
+                # ====================================================
+                # Connected Components
+                # ====================================================
+
+                pred_instance, num_instances = (
                     connected_components(
-                        binary_mask
+                        prediction
                     )
                 )
 
+                # ====================================================
+                # Instance AP / mAP
+                # ====================================================
+
                 ap_results, map_value = (
                     mean_average_precision(
-                        pred_instance_mask,
-                        gt_instance_mask,
-                        foreground_probability
+                        pred_instance,
+                        gt_instance,
+                        probability,
                     )
                 )
 
@@ -208,175 +328,97 @@ def evaluate_baseline(model):
 
                 update_threshold_results(
                     results,
-                    ap_results
+                    ap_results,
                 )
 
+                # ====================================================
+                # Erro absoluto de contagem
+                # ====================================================
+
                 error = count_error(
-                    pred_instance_mask,
-                    gt_instance_mask
+                    pred_instance,
+                    gt_instance,
                 )
 
                 results["count_error"].append(
                     float(error)
                 )
 
+                # ====================================================
+                # Densidade de objetos
+                # ====================================================
+
+                gt_object_ids = np.unique(
+                    gt_instance
+                )
+
+                gt_object_ids = gt_object_ids[
+                    gt_object_ids != 0
+                ]
+
                 number_of_objects = len(
-                    np.unique(
-                        gt_instance_mask
-                    )
-                ) - 1
+                    gt_object_ids
+                )
+
+                image_area = (
+                    gt_instance.shape[0]
+                    * gt_instance.shape[1]
+                )
+
+                object_density = (
+                    number_of_objects
+                    / image_area
+                )
 
                 results["density"].append(
                     {
                         "num_objects": int(
                             number_of_objects
                         ),
-                        "map": float(map_value),
-                        "count_error": float(error),
-                    }
-                )
-
-    return summarize_results(results), results["density"]
-
-def evaluate_boundary(model):
-
-    results = empty_results()
-
-    with torch.no_grad():
-
-        for batch in loader:
-
-            images = batch["image"].to(DEVICE)
-
-            semantic_masks = (
-                batch["semantic_mask"]
-                .to(DEVICE)
-                .unsqueeze(1)
-                .float()
-            )
-
-            gt_instance_masks = (
-                batch["instance_mask"]
-                .cpu()
-                .numpy()
-            )
-
-            logits = model(images)
-
-            probabilities = torch.softmax(
-                logits,
-                dim=1
-            )
-
-            # Background = classe 0
-            # Foreground = 1 - background
-            foreground_probability = (
-                1.0 - probabilities[:, 0:1]
-            )
-
-            foreground_logits = (
-                probability_to_logit(
-                    foreground_probability
-                )
-            )
-
-            dice = dice_score(
-                foreground_logits,
-                semantic_masks
-            )
-
-            iou = iou_score(
-                foreground_logits,
-                semantic_masks
-            )
-
-            results["dice"].append(float(dice))
-            results["iou"].append(float(iou))
-
-            for i in range(images.shape[0]):
-
-                image_logits = logits[i]
-
-                gt_instance_mask = (
-                    gt_instance_masks[i]
-                )
-
-                (
-                    pred_instance_mask,
-                    markers,
-                    foreground_mask
-                ) = watershed_from_logits(
-                    image_logits,
-                    interior_threshold=(
-                        INTERIOR_THRESHOLD
-                    ),
-                    foreground_threshold=(
-                        FOREGROUND_THRESHOLD
-                    ),
-                    min_marker_size=(
-                        MIN_MARKER_SIZE
-                    )
-                )
-
-                foreground_probability_image = (
-                    foreground_probability[i, 0]
-                    .cpu()
-                    .numpy()
-                )
-
-                ap_results, map_value = (
-                    mean_average_precision(
-                        pred_instance_mask,
-                        gt_instance_mask,
-                        foreground_probability_image
-                    )
-                )
-
-                results["map"].append(
-                    float(map_value)
-                )
-
-                update_threshold_results(
-                    results,
-                    ap_results
-                )
-
-                error = count_error(
-                    pred_instance_mask,
-                    gt_instance_mask
-                )
-
-                results["count_error"].append(
-                    float(error)
-                )
-
-                number_of_objects = len(
-                    np.unique(
-                        gt_instance_mask
-                    )
-                ) - 1
-
-                results["density"].append(
-                    {
-                        "num_objects": int(
-                            number_of_objects
+                        "density": float(
+                            object_density
                         ),
                         "map": float(map_value),
                         "count_error": float(error),
                     }
                 )
 
-    return summarize_results(results), results["density"]
+            print(
+                f"Avaliadas "
+                f"{min((batch_index + 1) * BATCH_SIZE, len(dataset))}"
+                f"/{len(dataset)} imagens",
+                end="\r",
+            )
+
+    print()
+
+    summary = summarize_results(
+        results
+    )
+
+    return summary, results["density"]
+
+
+# ============================================================
+# AGREGAÇÃO POR DENSIDADE
+# ============================================================
 
 def aggregate_by_density(
-    baseline_density,
-    boundary_density
+    density_results
 ):
+    """
+    Agrupa as imagens pelo número de objetos
+    presentes no ground truth.
+
+    Como todas as imagens foram normalizadas
+    para 256x256, número de objetos por imagem
+    é proporcional à densidade de objetos.
+    """
 
     density_values = sorted(
         set(
             item["num_objects"]
-            for item in baseline_density
+            for item in density_results
         )
     )
 
@@ -384,68 +426,53 @@ def aggregate_by_density(
 
     for density in density_values:
 
-        baseline_items = [
+        items = [
             item
-            for item in baseline_density
+            for item in density_results
             if item["num_objects"] == density
         ]
 
-        boundary_items = [
-            item
-            for item in boundary_density
-            if item["num_objects"] == density
-        ]
-
-        if len(baseline_items) == 0:
-            continue
-
-        if len(boundary_items) == 0:
+        if len(items) == 0:
             continue
 
         comparison.append(
             {
-                "num_objects": density,
-                "baseline_map": float(
+                "num_objects": int(
+                    density
+                ),
+                "density": float(
+                    items[0]["density"]
+                ),
+                "map": float(
                     np.mean(
                         [
                             item["map"]
-                            for item in baseline_items
+                            for item in items
                         ]
                     )
                 ),
-                "boundary_map": float(
-                    np.mean(
-                        [
-                            item["map"]
-                            for item in boundary_items
-                        ]
-                    )
-                ),
-                "baseline_count_error": float(
+                "count_error": float(
                     np.mean(
                         [
                             item["count_error"]
-                            for item in baseline_items
+                            for item in items
                         ]
                     )
                 ),
-                "boundary_count_error": float(
-                    np.mean(
-                        [
-                            item["count_error"]
-                            for item in boundary_items
-                        ]
-                    )
-                ),
+                "num_images": len(items),
             }
         )
 
     return comparison
 
 
+# ============================================================
+# GRÁFICO: mAP × DENSIDADE
+# ============================================================
+
 def save_density_plot(
     density_comparison,
-    output_path
+    output_path,
 ):
 
     if len(density_comparison) == 0:
@@ -456,279 +483,329 @@ def save_density_plot(
         for item in density_comparison
     ]
 
-    baseline_map = [
-        item["baseline_map"]
+    map_values = [
+        item["map"]
         for item in density_comparison
     ]
 
-    boundary_map = [
-        item["boundary_map"]
-        for item in density_comparison
-    ]
-
-    plt.figure(figsize=(8, 5))
-
-    plt.plot(
-        density,
-        baseline_map,
-        marker="o",
-        label="Baseline"
+    plt.figure(
+        figsize=(8, 5)
     )
 
     plt.plot(
         density,
-        boundary_map,
+        map_values,
         marker="o",
-        label="Boundary + Watershed"
     )
 
     plt.xlabel(
         "Número de objetos na imagem"
     )
 
-    plt.ylabel("mAP")
+    plt.ylabel(
+        "mAP@[0.50:0.95]"
+    )
 
     plt.title(
         "mAP em função da densidade de objetos"
     )
 
-    plt.grid(True, alpha=0.3)
-
-    plt.legend()
+    plt.grid(
+        True,
+        alpha=0.3,
+    )
 
     plt.tight_layout()
 
     plt.savefig(
         output_path,
-        dpi=200
+        dpi=200,
     )
 
     plt.close()
 
 
+# ============================================================
+# GRÁFICO: ERRO DE CONTAGEM × DENSIDADE
+# ============================================================
+
+def save_count_error_plot(
+    density_comparison,
+    output_path,
+):
+
+    if len(density_comparison) == 0:
+        return
+
+    density = [
+        item["num_objects"]
+        for item in density_comparison
+    ]
+
+    count_error_values = [
+        item["count_error"]
+        for item in density_comparison
+    ]
+
+    plt.figure(
+        figsize=(8, 5)
+    )
+
+    plt.plot(
+        density,
+        count_error_values,
+        marker="o",
+    )
+
+    plt.xlabel(
+        "Número de objetos na imagem"
+    )
+
+    plt.ylabel(
+        "Erro absoluto médio de contagem"
+    )
+
+    plt.title(
+        "Erro de contagem em função da densidade de objetos"
+    )
+
+    plt.grid(
+        True,
+        alpha=0.3,
+    )
+
+    plt.tight_layout()
+
+    plt.savefig(
+        output_path,
+        dpi=200,
+    )
+
+    plt.close()
+
+
+# ============================================================
+# IMPRESSÃO DOS RESULTADOS
+# ============================================================
+
 def print_results(
-    baseline_results,
-    boundary_results
+    results,
 ):
 
     print()
     print("=" * 60)
-    print("BASELINE")
+    print("BBBC038 - BASELINE SEMÂNTICO")
     print("=" * 60)
 
     print(
         f"Dice:              "
-        f"{baseline_results['dice']:.4f}"
+        f"{results['dice']:.4f}"
     )
 
     print(
         f"IoU:               "
-        f"{baseline_results['iou']:.4f}"
+        f"{results['iou']:.4f}"
     )
 
     print(
         f"mAP@[0.50:0.95]:   "
-        f"{baseline_results['map']:.4f}"
+        f"{results['map']:.4f}"
     )
 
     print(
         f"Mean count error:   "
-        f"{baseline_results['count_error']:.4f}"
+        f"{results['count_error']:.4f}"
     )
 
     print()
-    print("=" * 60)
-    print("BOUNDARY + WATERSHED")
-    print("=" * 60)
-
-    print(
-        f"Dice:              "
-        f"{boundary_results['dice']:.4f}"
-    )
-
-    print(
-        f"IoU:               "
-        f"{boundary_results['iou']:.4f}"
-    )
-
-    print(
-        f"mAP@[0.50:0.95]:   "
-        f"{boundary_results['map']:.4f}"
-    )
-
-    print(
-        f"Mean count error:   "
-        f"{boundary_results['count_error']:.4f}"
-    )
-
-    print()
-    print("=" * 60)
-    print("COMPARAÇÃO")
-    print("=" * 60)
-
-    print(
-        f"{'Métrica':<25}"
-        f"{'Baseline':>15}"
-        f"{'Boundary + WS':>20}"
-    )
-
+    print("AP POR LIMIAR DE IoU")
     print("-" * 60)
 
-    print(
-        f"{'Dice':<25}"
-        f"{baseline_results['dice']:>15.4f}"
-        f"{boundary_results['dice']:>20.4f}"
-    )
+    for threshold, ap in sorted(
+        results["map_by_threshold"].items(),
+        key=lambda x: float(x[0]),
+    ):
 
-    print(
-        f"{'IoU':<25}"
-        f"{baseline_results['iou']:>15.4f}"
-        f"{boundary_results['iou']:>20.4f}"
-    )
-
-    print(
-        f"{'mAP':<25}"
-        f"{baseline_results['map']:>15.4f}"
-        f"{boundary_results['map']:>20.4f}"
-    )
-
-    print(
-        f"{'Erro de contagem':<25}"
-        f"{baseline_results['count_error']:>15.4f}"
-        f"{boundary_results['count_error']:>20.4f}"
-    )
+        print(
+            f"AP@{float(threshold):.2f}: "
+            f"{ap:.4f}"
+        )
 
     print("=" * 60)
+
+
+# ============================================================
+# MAIN
+# ============================================================
 
 def main():
 
     OUTPUT_DIR.mkdir(
         parents=True,
-        exist_ok=True
+        exist_ok=True,
     )
+
+    print("=" * 60)
+    print("AVALIAÇÃO - BBBC038")
+    print("=" * 60)
 
     print(
         f"Device: {DEVICE}"
     )
 
     print(
-        f"Dataset: {len(dataset)} imagens"
-    )
-
-    print()
-    print("Carregando baseline...")
-
-    baseline_model = load_model(
-        BASELINE_CHECKPOINT,
-        num_classes=1
-    )
-
-    print("Carregando Boundary + Watershed...")
-
-    boundary_model = load_model(
-        BOUNDARY_CHECKPOINT,
-        num_classes=3
-    )
-
-    print()
-    print("Avaliando baseline...")
-
-    baseline_results, baseline_density = (
-        evaluate_baseline(
-            baseline_model
-        )
+        f"Test images: {len(dataset)}"
     )
 
     print(
-        "Avaliando Boundary + Watershed..."
+        f"Checkpoint: {CHECKPOINT_PATH}"
     )
 
-    boundary_results, boundary_density = (
-        evaluate_boundary(
-            boundary_model
-        )
+    print()
+
+    # --------------------------------------------------------
+    # Carrega modelo
+    # --------------------------------------------------------
+
+    print(
+        "Carregando modelo..."
     )
+
+    model = load_model()
+
+    print(
+        "Modelo carregado."
+    )
+
+    print()
+
+    # --------------------------------------------------------
+    # Avaliação
+    # --------------------------------------------------------
+
+    print(
+        "Avaliando baseline..."
+    )
+
+    summary, density_results = evaluate(
+        model
+    )
+
+    # --------------------------------------------------------
+    # Agregação por densidade
+    # --------------------------------------------------------
 
     density_comparison = (
         aggregate_by_density(
-            baseline_density,
-            boundary_density
+            density_results
         )
     )
 
+    # --------------------------------------------------------
+    # Resultados finais
+    # --------------------------------------------------------
+
     results = {
-        "baseline": baseline_results,
-        "boundary_watershed": boundary_results,
-        "density_comparison": density_comparison,
-        "configuration": {
-            "interior_threshold": (
-                INTERIOR_THRESHOLD
-            ),
-            "foreground_threshold": (
-                FOREGROUND_THRESHOLD
-            ),
-            "min_marker_size": (
-                MIN_MARKER_SIZE
-            ),
-            "matching": (
-                "greedy IoU-descending"
-            ),
-            "iou_thresholds": [
-                round(
-                    float(threshold),
-                    2
-                )
-                for threshold in np.arange(
-                    0.50,
-                    0.951,
-                    0.05
-                )
-            ],
-        },
+        "dataset": "BBBC038",
+        "task": "Part 1 - Semantic baseline",
+        "model": "U-Net",
+        "checkpoint": CHECKPOINT_PATH,
+        "threshold": FOREGROUND_THRESHOLD,
+        "matching": "greedy IoU-descending",
+        "iou_thresholds": [
+            round(
+                float(threshold),
+                2,
+            )
+            for threshold in np.arange(
+                0.50,
+                0.951,
+                0.05,
+            )
+        ],
+        "metrics": summary,
+        "density_analysis": density_comparison,
     }
 
+    # --------------------------------------------------------
+    # Salva JSON
+    # --------------------------------------------------------
+
     results_path = (
-        OUTPUT_DIR / "results.json"
+        OUTPUT_DIR
+        / "baseline_results.json"
     )
 
     with open(
         results_path,
         "w",
-        encoding="utf-8"
+        encoding="utf-8",
     ) as file:
 
         json.dump(
             results,
             file,
             indent=4,
-            ensure_ascii=False
+            ensure_ascii=False,
         )
 
+    # --------------------------------------------------------
+    # Salva gráfico mAP × densidade
+    # --------------------------------------------------------
+
     density_plot_path = (
-        OUTPUT_DIR /
-        "map_vs_object_density.png"
+        OUTPUT_DIR
+        / "map_vs_object_density.png"
     )
 
     save_density_plot(
         density_comparison,
-        density_plot_path
+        density_plot_path,
     )
 
+    # --------------------------------------------------------
+    # Salva gráfico erro × densidade
+    # --------------------------------------------------------
+
+    count_error_plot_path = (
+        OUTPUT_DIR
+        / "count_error_vs_object_density.png"
+    )
+
+    save_count_error_plot(
+        density_comparison,
+        count_error_plot_path,
+    )
+
+    # --------------------------------------------------------
+    # Imprime resultados
+    # --------------------------------------------------------
+
     print_results(
-        baseline_results,
-        boundary_results
+        summary
     )
 
     print()
+
     print(
         f"Resultados salvos em: "
         f"{results_path}"
     )
 
     print(
-        f"Gráfico salvo em: "
+        f"Gráfico mAP × densidade salvo em: "
         f"{density_plot_path}"
     )
+
+    print(
+        f"Gráfico erro × densidade salvo em: "
+        f"{count_error_plot_path}"
+    )
+
+
+# ============================================================
+# EXECUÇÃO
+# ============================================================
 
 if __name__ == "__main__":
     main()

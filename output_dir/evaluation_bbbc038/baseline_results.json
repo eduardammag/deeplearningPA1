@@ -1,0 +1,460 @@
+{
+    "dataset": "BBBC038",
+    "task": "Part 1 - Semantic baseline",
+    "model": "U-Net",
+    "checkpoint": "checkpoints/unet_baseline_bbbc038.pth",
+    "threshold": 0.5,
+    "matching": "greedy IoU-descending",
+    "iou_thresholds": [
+        0.5,
+        0.55,
+        0.6,
+        0.65,
+        0.7,
+        0.75,
+        0.8,
+        0.85,
+        0.9,
+        0.95
+    ],
+    "metrics": {
+        "dice": 0.8703167623164962,
+        "iou": 0.7920687148246072,
+        "map": 0.4488503671428167,
+        "count_error": 13.910891089108912,
+        "map_by_threshold": {
+            "0.5": 0.6354331130229095,
+            "0.55": 0.6038378896608958,
+            "0.6": 0.5776847559305777,
+            "0.65": 0.5529102258798119,
+            "0.7": 0.5260254514738153,
+            "0.75": 0.4884531028039518,
+            "0.8": 0.44255394285583016,
+            "0.85": 0.36749645511109774,
+            "0.9": 0.23708743611103072,
+            "0.95": 0.0570212985782469
+        }
+    },
+    "density_analysis": [
+        {
+            "num_objects": 4,
+            "density": 6.103515625e-05,
+            "map": 0.55,
+            "count_error": 2.0,
+            "num_images": 1
+        },
+        {
+            "num_objects": 5,
+            "density": 7.62939453125e-05,
+            "map": 0.9470000000000001,
+            "count_error": 0.5,
+            "num_images": 2
+        },
+        {
+            "num_objects": 7,
+            "density": 0.0001068115234375,
+            "map": 0.7954931972789115,
+            "count_error": 0.0,
+            "num_images": 2
+        },
+        {
+            "num_objects": 8,
+            "density": 0.0001220703125,
+            "map": 0.7639384920634921,
+            "count_error": 0.3333333333333333,
+            "num_images": 3
+        },
+        {
+            "num_objects": 9,
+            "density": 0.0001373291015625,
+            "map": 0.6026543209876544,
+            "count_error": 8.0,
+            "num_images": 3
+        },
+        {
+            "num_objects": 10,
+            "density": 0.000152587890625,
+            "map": 0.38866666666666666,
+            "count_error": 2.5,
+            "num_images": 2
+        },
+        {
+            "num_objects": 11,
+            "density": 0.0001678466796875,
+            "map": 0.6974856636869624,
+            "count_error": 1.5714285714285714,
+            "num_images": 7
+        },
+        {
+            "num_objects": 12,
+            "density": 0.00018310546875,
+            "map": 0.4486805555555555,
+            "count_error": 2.0,
+            "num_images": 2
+        },
+        {
+            "num_objects": 14,
+            "density": 0.000213623046875,
+            "map": 0.11428571428571428,
+            "count_error": 14.0,
+            "num_images": 1
+        },
+        {
+            "num_objects": 15,
+            "density": 0.0002288818359375,
+            "map": 0.5046367829701163,
+            "count_error": 1.3333333333333333,
+            "num_images": 3
+        },
+        {
+            "num_objects": 16,
+            "density": 0.000244140625,
+            "map": 0.5299348958333334,
+            "count_error": 3.5,
+            "num_images": 2
+        },
+        {
+            "num_objects": 17,
+            "density": 0.0002593994140625,
+            "map": 0.17235294117647057,
+            "count_error": 1.0,
+            "num_images": 1
+        },
+        {
+            "num_objects": 18,
+            "density": 0.000274658203125,
+            "map": 0.6059007053676171,
+            "count_error": 2.25,
+            "num_images": 4
+        },
+        {
+            "num_objects": 19,
+            "density": 0.0002899169921875,
+            "map": 0.6778007518796991,
+            "count_error": 3.0,
+            "num_images": 1
+        },
+        {
+            "num_objects": 20,
+            "density": 0.00030517578125,
+            "map": 0.636481295693757,
+            "count_error": 3.3333333333333335,
+            "num_images": 3
+        },
+        {
+            "num_objects": 21,
+            "density": 0.0003204345703125,
+            "map": 0.7005651076219961,
+            "count_error": 2.0,
+            "num_images": 2
+        },
+        {
+            "num_objects": 22,
+            "density": 0.000335693359375,
+            "map": 0.5537746761927911,
+            "count_error": 4.5,
+            "num_images": 2
+        },
+        {
+            "num_objects": 23,
+            "density": 0.0003509521484375,
+            "map": 0.6353348643922745,
+            "count_error": 3.3333333333333335,
+            "num_images": 3
+        },
+        {
+            "num_objects": 24,
+            "density": 0.0003662109375,
+            "map": 0.6049745985581898,
+            "count_error": 1.5,
+            "num_images": 2
+        },
+        {
+            "num_objects": 25,
+            "density": 0.0003814697265625,
+            "map": 0.7880438923395446,
+            "count_error": 2.0,
+            "num_images": 1
+        },
+        {
+            "num_objects": 26,
+            "density": 0.000396728515625,
+            "map": 0.4334730440499671,
+            "count_error": 8.0,
+            "num_images": 1
+        },
+        {
+            "num_objects": 27,
+            "density": 0.0004119873046875,
+            "map": 0.6869204139705347,
+            "count_error": 1.5,
+            "num_images": 2
+        },
+        {
+            "num_objects": 28,
+            "density": 0.00042724609375,
+            "map": 0.4764604726277863,
+            "count_error": 2.5,
+            "num_images": 2
+        },
+        {
+            "num_objects": 29,
+            "density": 0.0004425048828125,
+            "map": 0.28155933062880323,
+            "count_error": 8.0,
+            "num_images": 1
+        },
+        {
+            "num_objects": 30,
+            "density": 0.000457763671875,
+            "map": 0.3499474527083222,
+            "count_error": 6.0,
+            "num_images": 1
+        },
+        {
+            "num_objects": 31,
+            "density": 0.0004730224609375,
+            "map": 0.3399626448819998,
+            "count_error": 7.0,
+            "num_images": 1
+        },
+        {
+            "num_objects": 32,
+            "density": 0.00048828125,
+            "map": 0.2676928109159157,
+            "count_error": 8.5,
+            "num_images": 4
+        },
+        {
+            "num_objects": 33,
+            "density": 0.0005035400390625,
+            "map": 0.07128538128538128,
+            "count_error": 18.0,
+            "num_images": 1
+        },
+        {
+            "num_objects": 36,
+            "density": 0.00054931640625,
+            "map": 0.16115949154791165,
+            "count_error": 13.0,
+            "num_images": 2
+        },
+        {
+            "num_objects": 37,
+            "density": 0.0005645751953125,
+            "map": 0.24207650003826917,
+            "count_error": 13.5,
+            "num_images": 2
+        },
+        {
+            "num_objects": 39,
+            "density": 0.0005950927734375,
+            "map": 0.4631797975153831,
+            "count_error": 10.0,
+            "num_images": 2
+        },
+        {
+            "num_objects": 40,
+            "density": 0.0006103515625,
+            "map": 0.40388594476663076,
+            "count_error": 1.3333333333333333,
+            "num_images": 3
+        },
+        {
+            "num_objects": 42,
+            "density": 0.000640869140625,
+            "map": 0.4806327637543609,
+            "count_error": 8.0,
+            "num_images": 1
+        },
+        {
+            "num_objects": 43,
+            "density": 0.0006561279296875,
+            "map": 0.5409179791172327,
+            "count_error": 1.0,
+            "num_images": 1
+        },
+        {
+            "num_objects": 44,
+            "density": 0.00067138671875,
+            "map": 0.28561005979487797,
+            "count_error": 9.0,
+            "num_images": 1
+        },
+        {
+            "num_objects": 46,
+            "density": 0.000701904296875,
+            "map": 0.2704858073751716,
+            "count_error": 13.0,
+            "num_images": 1
+        },
+        {
+            "num_objects": 47,
+            "density": 0.0007171630859375,
+            "map": 0.1318809568861604,
+            "count_error": 6.0,
+            "num_images": 1
+        },
+        {
+            "num_objects": 51,
+            "density": 0.0007781982421875,
+            "map": 0.2927852974546807,
+            "count_error": 4.0,
+            "num_images": 1
+        },
+        {
+            "num_objects": 52,
+            "density": 0.00079345703125,
+            "map": 0.2687478176335516,
+            "count_error": 12.0,
+            "num_images": 2
+        },
+        {
+            "num_objects": 53,
+            "density": 0.0008087158203125,
+            "map": 0.19313275906775793,
+            "count_error": 15.5,
+            "num_images": 2
+        },
+        {
+            "num_objects": 57,
+            "density": 0.0008697509765625,
+            "map": 0.0009988739965856668,
+            "count_error": 34.0,
+            "num_images": 1
+        },
+        {
+            "num_objects": 60,
+            "density": 0.00091552734375,
+            "map": 0.25399257197844516,
+            "count_error": 15.5,
+            "num_images": 2
+        },
+        {
+            "num_objects": 68,
+            "density": 0.00103759765625,
+            "map": 0.3875301555864476,
+            "count_error": 8.0,
+            "num_images": 1
+        },
+        {
+            "num_objects": 75,
+            "density": 0.0011444091796875,
+            "map": 0.037921897546897544,
+            "count_error": 44.5,
+            "num_images": 2
+        },
+        {
+            "num_objects": 91,
+            "density": 0.0013885498046875,
+            "map": 0.37392842851947783,
+            "count_error": 21.0,
+            "num_images": 1
+        },
+        {
+            "num_objects": 98,
+            "density": 0.001495361328125,
+            "map": 0.008857672939305592,
+            "count_error": 87.0,
+            "num_images": 1
+        },
+        {
+            "num_objects": 101,
+            "density": 0.0015411376953125,
+            "map": 0.6036609487733439,
+            "count_error": 12.0,
+            "num_images": 1
+        },
+        {
+            "num_objects": 107,
+            "density": 0.0016326904296875,
+            "map": 0.5767840289052697,
+            "count_error": 12.0,
+            "num_images": 1
+        },
+        {
+            "num_objects": 112,
+            "density": 0.001708984375,
+            "map": 0.0757776317701702,
+            "count_error": 46.0,
+            "num_images": 1
+        },
+        {
+            "num_objects": 114,
+            "density": 0.001739501953125,
+            "map": 0.013888888888888886,
+            "count_error": 86.0,
+            "num_images": 1
+        },
+        {
+            "num_objects": 123,
+            "density": 0.0018768310546875,
+            "map": 0.460248592556312,
+            "count_error": 26.0,
+            "num_images": 1
+        },
+        {
+            "num_objects": 125,
+            "density": 0.0019073486328125,
+            "map": 0.4177528678715675,
+            "count_error": 35.0,
+            "num_images": 1
+        },
+        {
+            "num_objects": 132,
+            "density": 0.00201416015625,
+            "map": 0.15891420253112623,
+            "count_error": 63.0,
+            "num_images": 1
+        },
+        {
+            "num_objects": 133,
+            "density": 0.0020294189453125,
+            "map": 0.5688333759994886,
+            "count_error": 19.0,
+            "num_images": 1
+        },
+        {
+            "num_objects": 134,
+            "density": 0.002044677734375,
+            "map": 0.42416616845378874,
+            "count_error": 29.0,
+            "num_images": 1
+        },
+        {
+            "num_objects": 140,
+            "density": 0.00213623046875,
+            "map": 0.2697614257241305,
+            "count_error": 43.0,
+            "num_images": 1
+        },
+        {
+            "num_objects": 146,
+            "density": 0.002227783203125,
+            "map": 0.41247079354442595,
+            "count_error": 31.0,
+            "num_images": 1
+        },
+        {
+            "num_objects": 151,
+            "density": 0.0023040771484375,
+            "map": 0.013904829923139234,
+            "count_error": 107.0,
+            "num_images": 1
+        },
+        {
+            "num_objects": 158,
+            "density": 0.002410888671875,
+            "map": 0.26245252499003313,
+            "count_error": 49.0,
+            "num_images": 1
+        },
+        {
+            "num_objects": 196,
+            "density": 0.00299072265625,
+            "map": 0.0,
+            "count_error": 191.0,
+            "num_images": 1
+        }
+    ]
+}
