@@ -6,10 +6,10 @@ import numpy as np
 import torch
 from scipy.ndimage import gaussian_filter
 
-from dataset_pytorch import SyntheticSegmentationDataset
-from instance_metrics import mean_average_precision
-from unet import UNet
-from watershed import watershed_from_logits
+from src.segmentation.data.dataset import SyntheticSegmentationDataset
+from src.segmentation.metrics.instance import mean_average_precision
+from src.segmentation.models.unet import UNet
+from src.segmentation.postprocessing.watershed import watershed_from_logits
 
 
 DATA_DIR = Path("data/synthetic")

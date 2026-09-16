@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 
-from dataset_pytorch import SyntheticSegmentationDataset
-from unet import UNet
-from watershed import (
+from src.segmentation.data.dataset import SyntheticSegmentationDataset
+from src.segmentation.models.unet import UNet
+from src.segmentation.postprocessing.watershed import (
     watershed_from_logits,
 )
 

@@ -6,17 +6,17 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader
 
-from dataset_pytorch import SyntheticSegmentationDataset
-from unet import UNet
-from segnet import SegNet
-from watershed import watershed_from_logits
+from src.segmentation.data.dataset import SyntheticSegmentationDataset
+from src.segmentation.models.unet import UNet
+from src.segmentation.models.segnet import SegNet
+from src.segmentation.postprocessing.watershed import watershed_from_logits
 
-from semantic_metrics import (
+from src.segmentation.metrics.semantic import (
     dice_score,
     iou_score
 )
 
-from instance_metrics import (
+from src.segmentation.metrics.instance import (
     count_error,
     mean_average_precision
 )

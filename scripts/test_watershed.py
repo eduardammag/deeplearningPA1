@@ -1,6 +1,6 @@
 import numpy as np
 
-from watershed import watershed_from_probabilities
+from src.segmentation.postprocessing.watershed import watershed_from_probabilities
 
 
 def create_touching_objects(

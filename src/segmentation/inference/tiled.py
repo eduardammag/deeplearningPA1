@@ -4,8 +4,8 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 
-from unet import UNet
-from watershed import watershed_from_logits
+from ..models.unet import UNet
+from ..postprocessing.watershed import watershed_from_logits
 
 NUM_CLASSES = 3
 

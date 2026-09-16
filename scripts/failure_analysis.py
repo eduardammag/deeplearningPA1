@@ -5,17 +5,17 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 
-from dataset_pytorch import SyntheticSegmentationDataset
-from instance_metrics import (
+from src.segmentation.data.dataset import SyntheticSegmentationDataset
+from src.segmentation.metrics.instance import (
     count_error,
     mean_average_precision
 )
-from receptive_field import (
+from src.segmentation.inference.receptive_field import (
     object_sizes,
     unet_receptive_field
 )
-from unet import UNet
-from watershed import watershed_from_logits
+from src.segmentation.models.unet import UNet
+from src.segmentation.postprocessing.watershed import watershed_from_logits
 
 
 DATA_DIR = Path("data/synthetic")

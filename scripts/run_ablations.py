@@ -6,10 +6,10 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader
 
-from dataset_pytorch import SyntheticSegmentationDataset
-from unet import UNet
-from segnet import SegNet
-from ablation_losses import create_loss
+from src.segmentation.data.dataset import SyntheticSegmentationDataset
+from src.segmentation.models.unet import UNet
+from src.segmentation.models.segnet import SegNet
+from src.segmentation.losses.ablation import create_loss
 
 
 # ============================================================

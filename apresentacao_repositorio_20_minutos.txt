@@ -1,0 +1,445 @@
+Então, o que a gente quer é uma segmentacao de instancias, ou seja, a gente não quer só 
+dizer quais pixels pertencem a algum objeto, mas identificar cada objeto individualmente, 
+inclusive quando dois objetos se
+tocam.
+
+Ideia principal do projeto:
+  imagem em tons de cinza
+       -> U-Net classifica cada pixel
+       -> background / interior / boundary
+       -> interior produz marcadores
+       -> Watershed expande os marcadores dentro do foreground
+       -> mascara com um ID por instancia
+
+O diferencial tecnico e transformar uma rede de segmentacao semantica em um sistema
+de instancias pela combinacao de representacao de bordas e pos-processamento
+geometrico.
+
+1. VISAO MACRO DA ORGANIZACAO (1:30 - 3:00)
+
+  data/                 dataset sintetico organizado por amostra
+  checkpoints/          pesos treinados (.pth)
+  output_dir/           figuras, JSONs e resultados gerados
+  src/segmentation/     codigo reutilizavel do sistema
+  scripts/              comandos que executam treino, avaliacao e analises
+
+
+2. DADOS E REPRESENTACAO DO PROBLEMA (3:00 - 5:00)
+
+Abra primeiro data/synthetic/ e mostre a estrutura de uma amostra, por exemplo
+data/synthetic/0000/:
+
+- image.png: entrada em tons de cinza.
+- semantic_mask.png: mascara binaria; 0 e fundo, 1 e qualquer objeto.
+- instance_mask.png: mascara inteira; 0 e fundo e cada objeto recebe um ID proprio.
+
+Em seguida, explique a representacao usada no treino principal. Em vez de prever
+somente foreground, a rede possui tres classes:
+
+  classe 0 = background
+  classe 1 = interior dos objetos
+  classe 2 = boundary, a faixa de borda dos objetos
+
+Isso e importante porque o interior tende a permanecer separado mesmo quando os
+objetos se encostam. Cada componente de interior pode se tornar uma semente, ou
+marcador, para recuperar uma instancia ao final.
+
+ARQUIVOS DESTA ETAPA
+
+DETALHAR: src/segmentation/data/dataset.py
+
+- Define SyntheticSegmentationDataset, uma subclasse de torch.utils.data.Dataset.
+- No construtor, encontra as subpastas de amostras em root_dir e guarda a largura
+  de borda desejada.
+- Em __getitem__, carrega as tres imagens da amostra, converte os dados para
+  tensores e entrega um dicionario usado pelo DataLoader.
+- A imagem e normalizada; a mascara de instancia tambem permite construir a
+  boundary_mask.
+- Este arquivo e a ponte entre a estrutura de arquivos do dataset e o PyTorch.
+
+DETALHAR: src/segmentation/data/preprocessing.py
+
+- normalize_image converte a imagem para float e, se necessario, divide por 255,
+  deixando valores no intervalo aproximadamente [0, 1].
+- create_boundary_mask recebe uma mascara de IDs. Para cada objeto, aplica erosao
+  binaria; os pixels que sobrevivem sao interior (classe 1) e os pixels removidos
+  na borda sao boundary (classe 2). O fundo permanece na classe 0.
+- boundary_width controla quantas iteracoes de erosao definem a espessura da borda.
+- Mensagem tecnica: a classe de borda nao veio pronta no dataset; ela e derivada da
+  anotacao de instancias para supervisionar uma representacao mais informativa.
+
+DETALHAR MENOS: scripts/generate_synthetic_dataset.py
+
+- Gera os dados sinteticos. Desenha elipses rotacionadas com tamanhos, posicoes,
+  intensidades e ruido aleatorios.
+- Salva image.png, instance_mask.png e semantic_mask.png para cada indice.
+- Vale citar para justificar a reproducibilidade: aceita --output, --num-images e
+  --seed. Nao e necessario percorrer linha a linha, salvo se a geracao sintetica
+  for uma contribuicao central do trabalho.
+
+3. MODELO DE APRENDIZADO PROFUNDO E TREINO (5:00 - 8:00)
+
+FALA SUGERIDA
+
+"A U-Net recebe uma imagem com um canal e devolve um mapa de logits por classe para
+cada pixel. Para o modelo de bordas, a saida tem shape [batch, 3, altura, largura].
+Logits ainda nao sao probabilidades; mais adiante aplicamos softmax para obter as
+probabilidades das tres classes."
+
+DETALHAR: src/segmentation/models/unet.py
+
+- DoubleConv e o bloco basico: duas convolucoes 3x3, cada uma seguida de ReLU.
+- O encoder tem quatro niveis, com MaxPool 2x2 entre eles. A cada nivel, a resolucao
+  espacial diminui e a quantidade de canais cresce: 32, 64, 128, 256 e 512 no
+  bottleneck, usando os valores padrao.
+- O bottleneck concentra contexto espacial.
+- O decoder usa ConvTranspose2d para aumentar a resolucao.
+- Em cada nivel do decoder, torch.cat junta as features ampliadas com as features
+  equivalentes do encoder. Essas sao as skip connections, que recuperam detalhes
+  espaciais importantes para segmentacao de bordas.
+- A camada final e uma convolucao 1x1 que mapeia os canais internos para
+  num_classes. A mesma arquitetura serve ao baseline (1 canal) e ao metodo principal
+  (3 canais).
+
+DETALHAR: scripts/train.py
+
+- Configura DATA_DIR, BATCH_SIZE=4, EPOCHS=10 e LEARNING_RATE=1e-3.
+- Cria SyntheticSegmentationDataset com boundary_width=1 e um DataLoader com
+  embaralhamento.
+- Instancia UNet(in_channels=1, num_classes=3).
+- Usa pesos [0.5, 1.0, 2.0] para background, interior e boundary. Dar maior peso a
+  boundary tenta compensar o fato de a borda ocupar poucos pixels e ser a classe mais
+  importante para separar objetos.
+- Em cada batch: forward, calculo da perda, zerar gradientes, backward e passo do
+  otimizador Adam.
+- Ao final, salva state_dict em checkpoints/unet_boundary.pth.
+
+DETALHAR MENOS: src/segmentation/losses/cross_entropy.py
+
+- E uma camada de conveniencia que retorna a perda binaria para o baseline ou
+  CrossEntropyLoss ponderada para as tres classes.
+- Vale mencionar para explicar os pesos de classe, mas nao e necessario mostrar
+  detalhes da API do PyTorch.
+
+DETALHAR MENOS: src/segmentation/models/segnet.py
+
+- Implementa uma arquitetura alternativa, SegNet, com DoubleConv.
+- Seu uso principal e servir de comparacao nas ablações; nao e a arquitetura central.
+
+DETALHAR MENOS: src/segmentation/losses/ablation.py
+
+- Implementa FocalLoss e create_loss.
+- E relevante ao apresentar ablações de perda, mas pode ficar em um slide de
+  experimentos, sem abrir o arquivo no fluxo principal.
+
+4. POS-PROCESSAMENTO: DE CLASSES PARA INSTANCIAS (8:00 - 11:30)
+
+Esta e a parte mais importante da apresentacao. Abra
+src/segmentation/postprocessing/watershed.py.
+
+DETALHAR MUITO: src/segmentation/postprocessing/watershed.py
+
+Passo a passo de watershed_from_logits:
+
+1. Recebe logits de shape [3, H, W].
+2. Aplica softmax no eixo das classes e transfere o resultado para NumPy.
+3. watershed_from_probabilities separa as tres probabilidades:
+   - P(background)
+   - P(interior)
+   - P(boundary)
+4. Calcula foreground como 1 - P(background), entao aplica foreground_threshold.
+5. Limiariza P(interior) por interior_threshold. Apos isso,
+   remove_small_components elimina pequenas componentes conexas, reduzindo sementes
+   geradas por ruido.
+6. create_markers rotula cada componente de interior restante com ndimage.label.
+   Cada rotulo e uma semente candidata a instancia.
+7. P(boundary) e o mapa de elevacao. O algoritmo watershed expande cada marcador
+   dentro da mascara de foreground e encontra divisores em regioes de alta borda.
+8. O resultado e instance_mask: 0 para fundo e 1, 2, ... para cada objeto previsto.
+
+Ponto didatico essencial:
+
+- Se a rede previsse apenas foreground, dois objetos encostados poderiam formar uma
+  componente unica.
+- Com interiores separados, o Watershed tem duas sementes e consegue dividir a
+  regiao conectada.
+- min_marker_size e um hiperparametro importante: alto demais remove objetos pequenos;
+  baixo demais preserva sementes espurias.
+
+DETALHAR: scripts/test_watershed.py
+
+- Cria dois circulos que se tocam, com interiores separados e bordas ideais.
+- Constrói probabilidades artificiais para as tres classes.
+- Confirma por asserts que existem exatamente dois marcadores, duas instancias e que
+  o foreground final coincide com o esperado.
+- E uma demonstracao excelente, curta e deterministica. Se houver pouco tempo, este
+  arquivo pode substituir uma explicacao longa do algoritmo.
+
+DETALHAR MENOS: src/segmentation/postprocessing/connected_components.py
+
+- Recebe uma previsao binaria e usa componentes conexos para atribuir IDs.
+- E o pos-processamento do baseline; e simples, mas importante como referencia para
+  explicar por que ele falha quando objetos se tocam.
+
+DETALHAR MENOS: src/segmentation/postprocessing/instance_fusion.py
+
+- E usado somente na inferencia em mosaicos. Calcula IoU entre instancias de tiles
+  sobrepostos e usa Union-Find para juntar IDs que representam o mesmo objeto.
+- Mostre apenas se a apresentacao incluir imagens maiores que o tamanho de treino.
+
+5. METRICAS E AVALIACAO PRINCIPAL (11:30 - 14:30)
+
+DETALHAR: src/segmentation/metrics/semantic.py
+
+- dice_score mede a sobreposicao entre previsao e mascara semantica. E especialmente
+  comum em segmentacao, pois considera intersecao em relacao ao tamanho das regioes.
+- iou_score, ou Jaccard, mede intersecao dividida pela uniao.
+- Essas metricas respondem: "o foreground esta bem segmentado?".
+
+DETALHAR MUITO: src/segmentation/metrics/instance.py
+
+- get_instance_ids ignora o ID 0 de fundo.
+- instance_iou calcula a sobreposicao entre uma instancia prevista e uma real.
+- match_instances constroi pares candidato com IoU acima do limiar, ordena por IoU
+  decrescente e faz matching greedy um-para-um. O resultado define TP, FP e FN.
+- count_error mede a diferenca absoluta entre o numero de objetos previstos e reais.
+- Para AP, cada instancia prevista recebe confianca igual a media da probabilidade de
+  foreground em seus pixels. As predicoes sao ordenadas por confianca e associadas ao
+  melhor ground truth ainda nao usado.
+- average_precision integra a curva precisao-recall para um limiar de IoU.
+- mean_average_precision repete AP de IoU 0.50 a 0.95, de 0.05 em 0.05, e tira a
+  media. Essa e a metrica de instancia mais completa do projeto.
+
+DETALHAR: scripts/evaluate.py
+
+- Carrega dois checkpoints: baseline com uma classe e modelo boundary com tres.
+- evaluate_baseline aplica sigmoid ao logit binario, limiariza em 0.5 e converte o
+  foreground em instancias por componentes conexos.
+- evaluate_boundary aplica softmax, mede foreground por 1 - P(background) e chama
+  watershed_from_logits para produzir instancias.
+- Ambos os caminhos calculam Dice, IoU, mAP e erro de contagem para permitir uma
+  comparacao justa.
+- aggregate_by_density agrupa imagens pelo numero real de objetos. Isso mostra se o
+  ganho do metodo muda quando a cena e mais densa.
+- main salva results.json e map_vs_object_density.png em output_dir/evaluation/.
+
+Mensagem para encerrar esta secao:
+
+"Dice e IoU avaliam pixels. mAP e erro de contagem avaliam objetos. Um metodo pode
+ter boa mascara semantica e ainda falhar em separar instancias, por isso precisamos
+das duas familias de metricas."
+
+6. EXTENSOES E EXPERIMENTOS (14:30 - 17:30)
+
+Apresente estes recursos como extensoes do fluxo principal. Nao abra todos os
+arquivos; mostre a arvore, os resultados salvos e escolha no maximo um tema.
+
+scripts/run_ablations.py -- DETALHAR SE O FOCO FOR METODOLOGIA EXPERIMENTAL
+
+- Define sementes para reproducibilidade, cria loaders e modelos e treina varias
+  configuracoes.
+- Compara arquitetura, resolucao e funcao de perda.
+- Salva checkpoints e resultados para analise posterior.
+
+scripts/evaluate_ablations.py -- DETALHAR MENOS
+
+- Carrega configuracoes de ablação, avalia metricas, calcula media/desvio padrao e
+  gera graficos para resolucao e perdas.
+- Deve ser citado como separacao saudavel entre executar experimentos e analisa-los.
+
+src/segmentation/inference/tiled.py -- DETALHAR SE O FOCO FOR ESCALABILIDADE
+
+- prepare_image aceita NumPy ou Tensor e padroniza para [1, 1, H, W].
+- generate_tile_positions cria tiles com sobreposicao.
+- pad_tile completa tiles menores nas bordas.
+- predict_tile executa a rede e o Watershed em um tile.
+- tiled_inference combina as predicoes locais em uma representacao global ainda com
+  IDs duplicados.
+
+scripts/evaluate_tiled.py -- DETALHAR MENOS
+
+- Avalia a inferencia por tiles antes e depois de fuse_instances.
+- Reporta o efeito da fusao em mAP e erro de contagem.
+
+scripts/visualize_tiled.py -- DETALHAR MENOS
+
+- Produz figura com limites dos tiles, instancias locais e mascara fundida.
+- E mais util como evidencia visual do que como codigo para explicar em detalhe.
+
+scripts/visualize_watershed.py -- DETALHAR MENOS
+
+- Gera exemplos visuais de imagem, ground truth, previsao, marcadores e Watershed.
+- Use uma figura gerada aqui durante a explicacao da secao 4.
+
+scripts/visualize_boundary.py -- DETALHAR MENOS
+
+- Mostra a imagem e as mascaras associadas a previsao de borda.
+- E apoio visual para explicar as tres classes, nao um novo algoritmo.
+
+src/segmentation/inference/receptive_field.py -- DETALHAR MENOS
+
+- Estima campo receptivo da U-Net e extrai tamanhos de objetos.
+- Alimenta a interpretacao da analise de falhas: objetos muito pequenos podem ser
+  particularmente sensiveis a resolucao, erosao e tamanho minimo do marcador.
+
+scripts/failure_analysis.py -- DETALHAR SE O FOCO FOR LIMITACOES
+
+- Carrega o modelo, prediz e mede resultados por imagem.
+- Seleciona exemplos ruins, monta uma galeria e compara uma correcao baseada em
+  reduzir o tamanho minimo de marcador.
+- E relevante para mostrar que hiperparametros de pos-processamento trazem trade-off
+  entre separar objetos pequenos e criar falsos positivos.
+
+scripts/stress_test.py -- DETALHAR SE O FOCO FOR ROBUSTEZ
+
+- Cria versoes corrompidas por blur, ruido e brilho/contraste.
+- Executa predicao e metricas para diferentes niveis de corrupcao.
+- Gera graficos de degradacao de desempenho. Mostra uma avaliacao alem do dataset
+  original, mas nao altera o modelo.
+
+7. ENCERRAMENTO: LIMITACOES, ESCALABILIDADE E CONTRIBUICAO (17:30 - 20:00)
+
+FALA SUGERIDA
+
+"O repositorio separa claramente dados, modelo, perdas, pos-processamento, metricas
+e scripts de experimento. Essa estrutura permite trocar a U-Net por SegNet, trocar
+a perda, mudar os limiares do Watershed ou adicionar um novo tipo de avaliacao sem
+reescrever o restante do sistema."
+
+Pontos fortes para destacar:
+
+- Pipeline completo: geracao de dados, treino, inferencia, avaliacao e analises.
+- Separacao entre segmentacao semantica e de instancias, com metricas adequadas para
+  cada nivel.
+- Watershed guiado por previsao de interior e borda, que ataca diretamente objetos
+  encostados.
+- Reprodutibilidade por seeds em ablações, checkpoints e resultados em JSON.
+- Extensoes para tiles, fusao de instancias, falhas e robustez.
+
+Limitacoes honestas para mencionar:
+
+- O dataset e sintetico e relativamente pequeno; resultados podem nao generalizar
+  diretamente para imagens reais.
+- Os limiares de interior, foreground e tamanho minimo de marcador sao
+  hiperparametros sensiveis.
+- O matching de instancias e greedy, nao uma otimizacao global.
+- A qualidade final depende tanto da rede quanto do pos-processamento; boa
+  segmentacao semantica nao garante bom mAP de instancias.
+
+Conclusao em uma frase:
+
+"A contribuicao central e usar uma U-Net para aprender uma representacao
+background-interior-boundary e converter essa representacao em instancias por
+Watershed, avaliando nao apenas pixels, mas tambem objetos individuais."
+
+===============================================================================
+8. CONFERENCIA COM O ENUNCIADO DO PA1
+===============================================================================
+
+O enunciado pede que uma arquitetura estudada na disciplina produza rotulos de
+instancias, sem usar detectores com proposta de regiao ou modelos prontos de
+segmentacao de instancias. Ele exige que o grupo defina tres coisas: o que a rede
+preve, qual perda e otimizada e como a previsao e convertida em objetos.
+
+O QUE O PROFESSOR PEDE
+
+1. Gerar primeiro um teste unitario sintetico: imagens de cento e vinte e oito por
+   cento e vinte e oito pixels, com cinco a vinte elipses de tamanhos variados,
+   objetos tocando, ruido, contraste variavel e mascaras de instancia. Tambem pede
+   demonstrar treinamento em menos de cinco minutos e reportar uma metrica.
+
+2. Treinar uma baseline binaria de segmentacao semantica, extrair instancias por
+   limiar e componentes conexos, e reportar Dice, IoU, mAP de instancias e erro de
+   contagem. O mAP deve casar cada previsao com no maximo uma anotacao real nos
+   limiares de IoU de zero virgula cinquenta a zero virgula noventa e cinco. A regra
+   de matching precisa estar documentada e o fracasso da baseline deve ser mostrado
+   em funcao da densidade de objetos.
+
+3. Escolher uma trilha de instancia. Na Trilha A, a rede deve prever fundo, interior
+   e fronteira, e o Watershed deve usar interiores como marcadores. Tambem e preciso
+   explicar como a fronteira foi criada, sua espessura e como a classe minoritaria foi
+   ponderada na perda.
+
+4. Fazer ablações em dois eixos, com duas seeds por configuracao, reportando media e
+   desvio padrao. Os eixos permitidos sao recuperacao de resolucao, funcao de perda e
+   contexto global.
+
+5. Executar inferencia em mosaico sobre uma imagem grande, demonstrar o problema de
+   objetos na fronteira de tiles, implementar fusao e medir o mAP antes e depois.
+
+6. Criar uma galeria com cinco falhas, calcular o campo receptivo teorico, compara-lo
+   aos tamanhos dos objetos e aplicar uma correcao baseada em um diagnostico.
+
+7. Realizar um teste de estresse: mudanca de modalidade ou cidade, corrupcoes em tres
+   intensidades, ou mudanca de escala.
+
+8. Entregar repositorio com historico distribuido, README com ambiente e dados,
+   AI_LOG.md, notebook de inferencia para imagem arbitraria e checkpoint final.
+
+O QUE ESTE REPOSITORIO ATENDE
+
+1. O teste sintetico e implementado. generate_synthetic_dataset.py cria imagens de
+   cento e vinte e oito por cento e vinte e oito pixels com cinco a vinte elipses,
+   variacao de tamanho, ruido, contraste e mascaras de instancia. test_watershed.py
+   testa de forma deterministica dois objetos que se tocam.
+
+2. A baseline e avaliada. O repositorio possui checkpoint binario, usa limiar e
+   componentes conexos, implementa Dice, IoU, mAP e erro de contagem. O matching foi
+   escrito no proprio repositorio e esta configurado como guloso por IoU decrescente.
+   output_dir/evaluation possui resultados e grafico por densidade de objetos.
+
+3. A Trilha A esta implementada. A U-Net produz tres classes, a fronteira e criada
+   por erosao binaria com largura de um pixel, a perda da fronteira recebe peso maior
+   e o Watershed usa interiores como marcadores. A avaliacao compara a baseline e o
+   metodo de fronteiras com as mesmas metricas.
+
+4. Dois eixos de ablação existem em codigo. run_ablations.py compara U-Net e SegNet e
+   compara perdas de entropia cruzada, balanceada, focal e focal balanceada. Cada
+   configuracao usa duas seeds e inclui gamma zero, um, dois e cinco.
+
+5. A inferencia em tiles e a fusao de instancias estao implementadas. tiled.py cria
+   tiles sobrepostos, instance_fusion.py une instancias por IoU e Union-Find, e
+   evaluate_tiled.py mede mAP e erro de contagem antes e depois da fusao.
+
+6. A galeria de falhas e o teste de estresse estao implementados em codigo.
+   failure_analysis.py calcula campo receptivo, seleciona cinco falhas e testa uma
+   correcao do tamanho minimo de marcador. stress_test.py testa blur, ruido e
+   brilho/contraste em tres intensidades.
+
+O QUE ESTA PARCIALMENTE ATENDIDO OU PENDENTE
+
+1. Nao ha registro que prove treinamento sintetico em menos de cinco minutos, nem um
+   resultado isolado identificado como metrica do teste unitario.
+
+2. O checkpoint da baseline existe e e avaliado, mas nao ha script separado para
+   reproduzir o treinamento binario. train.py treina somente o modelo de tres classes.
+
+3. As ablações estao implementadas, mas output_dir/ablations, com resultados, medias,
+   desvios padrao e figuras, nao esta presente. Alem disso, o enunciado pede comparar
+   mecanismos de recuperacao de resolucao no mesmo encoder; a comparacao atual entre
+   U-Net e SegNet deve ser justificada ou ajustada.
+
+4. A inferencia em mosaico e feita em cada imagem sintetica de cento e vinte e oito
+   pixels, dividida em tiles menores. O enunciado pede uma imagem grande formada por
+   varias imagens ou uma cena inteira. A logica existe, mas essa demonstracao ainda
+   precisa ser criada ou comprovada.
+
+5. Os scripts de analise de falhas e estresse existem, mas seus resultados, figuras e
+   JSONs nao estao presentes em output_dir. Eles precisam ser executados e os
+   artefatos precisam ser preservados para a apresentacao.
+
+6. O enunciado exige dados reais depois do teste sintetico: nucleos DSB2018 ou
+   BBBC038v1, ou edificacoes CrowdAI. O repositorio atual possui apenas data/synthetic
+   e nao possui split estratificado de treino, validacao e teste.
+
+7. AI_LOG.md, exigido para documentar o uso de inteligencia artificial, nao esta
+   presente. O README ainda precisa documentar dependencias de ambiente e a obtencao
+   e preparo do dataset real.
+
+8. inferencia.ipynb existe, mas ainda precisa ser demonstrado que recebe uma imagem
+   arbitraria e devolve mascara colorida e contagem sem retreinamento. O requisito de
+   historico Git distribuido tambem precisa ser confirmado no historico do repositorio.
+
+Esta conferencia deve ser apresentada com transparencia: codigo implementado nao
+substitui resultados reproduziveis, e o uso somente de dados sinteticos nao satisfaz
+o requisito de dados reais do PA1.

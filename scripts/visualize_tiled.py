@@ -3,16 +3,16 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 
-from dataset_pytorch import SyntheticSegmentationDataset
+from src.segmentation.data.dataset import SyntheticSegmentationDataset
 
-from inferencia import (
+from src.segmentation.inference.tiled import (
     load_model,
     tiled_inference,
     DEFAULT_TILE_SIZE,
     DEFAULT_OVERLAP
 )
 
-from instance_fusion import (
+from src.segmentation.postprocessing.instance_fusion import (
     fuse_instances
 )
 
