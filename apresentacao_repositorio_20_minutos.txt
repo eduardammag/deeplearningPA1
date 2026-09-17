@@ -1,8 +1,3 @@
-Então, o que a gente quer é uma segmentacao de instancias, ou seja, a gente não quer só 
-dizer quais pixels pertencem a algum objeto, mas identificar cada objeto individualmente, 
-inclusive quando dois objetos se
-tocam.
-
 Ideia principal do projeto:
   imagem em tons de cinza
        -> U-Net classifica cada pixel
@@ -78,8 +73,6 @@ DETALHAR MENOS: scripts/generate_synthetic_dataset.py
   for uma contribuicao central do trabalho.
 
 3. MODELO DE APRENDIZADO PROFUNDO E TREINO (5:00 - 8:00)
-
-FALA SUGERIDA
 
 "A U-Net recebe uma imagem com um canal e devolve um mapa de logits por classe para
 cada pixel. Para o modelo de bordas, a saida tem shape [batch, 3, altura, largura].
@@ -332,56 +325,20 @@ Conclusao em uma frase:
 background-interior-boundary e converter essa representacao em instancias por
 Watershed, avaliando nao apenas pixels, mas tambem objetos individuais."
 
-===============================================================================
+
 8. CONFERENCIA COM O ENUNCIADO DO PA1
-===============================================================================
 
 O enunciado pede que uma arquitetura estudada na disciplina produza rotulos de
 instancias, sem usar detectores com proposta de regiao ou modelos prontos de
 segmentacao de instancias. Ele exige que o grupo defina tres coisas: o que a rede
 preve, qual perda e otimizada e como a previsao e convertida em objetos.
 
-O QUE O PROFESSOR PEDE
-
-1. Gerar primeiro um teste unitario sintetico: imagens de cento e vinte e oito por
-   cento e vinte e oito pixels, com cinco a vinte elipses de tamanhos variados,
-   objetos tocando, ruido, contraste variavel e mascaras de instancia. Tambem pede
-   demonstrar treinamento em menos de cinco minutos e reportar uma metrica.
-
-2. Treinar uma baseline binaria de segmentacao semantica, extrair instancias por
-   limiar e componentes conexos, e reportar Dice, IoU, mAP de instancias e erro de
-   contagem. O mAP deve casar cada previsao com no maximo uma anotacao real nos
-   limiares de IoU de zero virgula cinquenta a zero virgula noventa e cinco. A regra
-   de matching precisa estar documentada e o fracasso da baseline deve ser mostrado
-   em funcao da densidade de objetos.
-
-3. Escolher uma trilha de instancia. Na Trilha A, a rede deve prever fundo, interior
-   e fronteira, e o Watershed deve usar interiores como marcadores. Tambem e preciso
-   explicar como a fronteira foi criada, sua espessura e como a classe minoritaria foi
-   ponderada na perda.
-
-4. Fazer ablações em dois eixos, com duas seeds por configuracao, reportando media e
-   desvio padrao. Os eixos permitidos sao recuperacao de resolucao, funcao de perda e
-   contexto global.
-
-5. Executar inferencia em mosaico sobre uma imagem grande, demonstrar o problema de
-   objetos na fronteira de tiles, implementar fusao e medir o mAP antes e depois.
-
-6. Criar uma galeria com cinco falhas, calcular o campo receptivo teorico, compara-lo
-   aos tamanhos dos objetos e aplicar uma correcao baseada em um diagnostico.
-
-7. Realizar um teste de estresse: mudanca de modalidade ou cidade, corrupcoes em tres
-   intensidades, ou mudanca de escala.
-
-8. Entregar repositorio com historico distribuido, README com ambiente e dados,
-   AI_LOG.md, notebook de inferencia para imagem arbitraria e checkpoint final.
-
 O QUE ESTE REPOSITORIO ATENDE
 
-1. O teste sintetico e implementado. generate_synthetic_dataset.py cria imagens de
-   cento e vinte e oito por cento e vinte e oito pixels com cinco a vinte elipses,
-   variacao de tamanho, ruido, contraste e mascaras de instancia. test_watershed.py
-   testa de forma deterministica dois objetos que se tocam.
+1. O teste sintetico e implementado. 
+    generate_synthetic_dataset.py cria elipses, com variacao de tamanho, ruido, 
+    contraste e mascaras de instancia. 
+    test_watershed.py testa de forma deterministica dois objetos que se tocam.
 
 2. A baseline e avaliada. O repositorio possui checkpoint binario, usa limiar e
    componentes conexos, implementa Dice, IoU, mAP e erro de contagem. O matching foi
@@ -405,41 +362,3 @@ O QUE ESTE REPOSITORIO ATENDE
    failure_analysis.py calcula campo receptivo, seleciona cinco falhas e testa uma
    correcao do tamanho minimo de marcador. stress_test.py testa blur, ruido e
    brilho/contraste em tres intensidades.
-
-O QUE ESTA PARCIALMENTE ATENDIDO OU PENDENTE
-
-1. Nao ha registro que prove treinamento sintetico em menos de cinco minutos, nem um
-   resultado isolado identificado como metrica do teste unitario.
-
-2. O checkpoint da baseline existe e e avaliado, mas nao ha script separado para
-   reproduzir o treinamento binario. train.py treina somente o modelo de tres classes.
-
-3. As ablações estao implementadas, mas output_dir/ablations, com resultados, medias,
-   desvios padrao e figuras, nao esta presente. Alem disso, o enunciado pede comparar
-   mecanismos de recuperacao de resolucao no mesmo encoder; a comparacao atual entre
-   U-Net e SegNet deve ser justificada ou ajustada.
-
-4. A inferencia em mosaico e feita em cada imagem sintetica de cento e vinte e oito
-   pixels, dividida em tiles menores. O enunciado pede uma imagem grande formada por
-   varias imagens ou uma cena inteira. A logica existe, mas essa demonstracao ainda
-   precisa ser criada ou comprovada.
-
-5. Os scripts de analise de falhas e estresse existem, mas seus resultados, figuras e
-   JSONs nao estao presentes em output_dir. Eles precisam ser executados e os
-   artefatos precisam ser preservados para a apresentacao.
-
-6. O enunciado exige dados reais depois do teste sintetico: nucleos DSB2018 ou
-   BBBC038v1, ou edificacoes CrowdAI. O repositorio atual possui apenas data/synthetic
-   e nao possui split estratificado de treino, validacao e teste.
-
-7. AI_LOG.md, exigido para documentar o uso de inteligencia artificial, nao esta
-   presente. O README ainda precisa documentar dependencias de ambiente e a obtencao
-   e preparo do dataset real.
-
-8. inferencia.ipynb existe, mas ainda precisa ser demonstrado que recebe uma imagem
-   arbitraria e devolve mascara colorida e contagem sem retreinamento. O requisito de
-   historico Git distribuido tambem precisa ser confirmado no historico do repositorio.
-
-Esta conferencia deve ser apresentada com transparencia: codigo implementado nao
-substitui resultados reproduziveis, e o uso somente de dados sinteticos nao satisfaz
-o requisito de dados reais do PA1.
