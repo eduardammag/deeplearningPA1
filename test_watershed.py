@@ -7,23 +7,11 @@ def create_touching_objects(
     height=128,
     width=128
 ):
-    """
-    Cria dois círculos que se tocam.
-
-    Retorna:
-        foreground
-        interior
-        boundary
-    """
 
     yy, xx = np.ogrid[
         :height,
         :width
     ]
-
-    # ----------------------------------------------
-    # Dois círculos encostados
-    # ----------------------------------------------
 
     center_y = height // 2
 
@@ -48,10 +36,6 @@ def create_touching_objects(
         object_1 | object_2
     )
 
-    # ----------------------------------------------
-    # Interiores
-    # ----------------------------------------------
-
     interior_1 = (
         (xx - center_x_1) ** 2
         + (yy - center_y) ** 2
@@ -67,10 +51,6 @@ def create_touching_objects(
     interior = (
         interior_1 | interior_2
     )
-
-    # ----------------------------------------------
-    # Boundary
-    # ----------------------------------------------
 
     boundary = (
         foreground
@@ -94,33 +74,22 @@ def test_two_touching_objects():
 
     height, width = foreground.shape
 
-    # ----------------------------------------------
-    # Construir probabilidades ideais
-    # ----------------------------------------------
-
     probabilities = np.zeros(
         (3, height, width),
         dtype=np.float32
     )
 
-    # Background
     probabilities[0] = (
         1.0 - foreground.astype(np.float32)
     )
 
-    # Interior
     probabilities[1] = (
         interior.astype(np.float32)
     )
 
-    # Boundary
     probabilities[2] = (
         boundary.astype(np.float32)
     )
-
-    # ----------------------------------------------
-    # Watershed
-    # ----------------------------------------------
 
     (
         instance_mask,
@@ -141,10 +110,6 @@ def test_two_touching_objects():
         np.unique(instance_mask)
     ) - 1
 
-    # ----------------------------------------------
-    # Verificações
-    # ----------------------------------------------
-
     assert number_of_markers == 2, (
         "O teste deveria produzir "
         "exatamente dois marcadores."
@@ -158,22 +123,13 @@ def test_two_touching_objects():
     assert np.array_equal(
         foreground_mask,
         foreground
-    ), (
-        "O foreground previsto deveria "
-        "corresponder ao foreground sintético."
-    )
+    ), ("O foreground previsto deveria corresponder ao foreground sintético.")
 
-    print(
-        "Teste do watershed concluído com sucesso."
-    )
+    print("Teste do watershed concluído com sucesso.")
 
-    print(
-        f"Marcadores: {number_of_markers}"
-    )
+    print(f"Marcadores: {number_of_markers}")
 
-    print(
-        f"Instâncias: {number_of_instances}"
-    )
+    print(f"Instâncias: {number_of_instances}")
 
 
 if __name__ == "__main__":

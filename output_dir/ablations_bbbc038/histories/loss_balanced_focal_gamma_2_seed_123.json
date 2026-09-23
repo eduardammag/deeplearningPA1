@@ -1,0 +1,67 @@
+{
+  "axis": "loss",
+  "architecture": "unet",
+  "loss": "balanced_focal",
+  "gamma": 2.0,
+  "seed": 123,
+  "batch_size": 4,
+  "epochs_max": 5,
+  "early_stopping_patience": 2,
+  "learning_rate": 0.001,
+  "target_size": 256,
+  "class_weights": [
+    1.0,
+    1.0,
+    3.0
+  ],
+  "boundary_thickness": 1,
+  "best_epoch": 3,
+  "best_val_loss": 0.05874387018382549,
+  "best_val_dice": 0.7425311686669196,
+  "best_val_iou": 0.590496678855841,
+  "total_time_seconds": 2056.2051391601562,
+  "total_time_minutes": 34.27008565266927,
+  "checkpoint": "output_dir/ablations_bbbc038/checkpoints/loss_balanced_focal_gamma_2_seed_123.pth",
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.2052189394919031,
+      "val_loss": 0.07699904687702656,
+      "val_dice": 0.429001481354676,
+      "val_iou": 0.27307567528746307,
+      "epoch_time_seconds": 430.8979573249817
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.06954494549203784,
+      "val_loss": 0.06433924861252308,
+      "val_dice": 0.7465045194092487,
+      "val_iou": 0.5955382615798771,
+      "epoch_time_seconds": 403.01992559432983
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.06354564473505563,
+      "val_loss": 0.05874387018382549,
+      "val_dice": 0.7425311686669196,
+      "val_iou": 0.590496678855841,
+      "epoch_time_seconds": 412.2686245441437
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.061025941005743135,
+      "val_loss": 0.07148854240775109,
+      "val_dice": 0.6942383478675969,
+      "val_iou": 0.5316731018512112,
+      "epoch_time_seconds": 401.0692443847656
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.061166482280566495,
+      "val_loss": 0.059773754179477695,
+      "val_dice": 0.7304824189883105,
+      "val_iou": 0.575401577665575,
+      "epoch_time_seconds": 408.9261898994446
+    }
+  ]
+}

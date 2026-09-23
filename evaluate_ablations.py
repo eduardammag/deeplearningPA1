@@ -6,87 +6,71 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader
 
-from dataset_pytorch import SyntheticSegmentationDataset
+from dataset_bbbc038 import BBBC038Dataset
+
 from unet import UNet
 from segnet import SegNet
+
 from watershed import watershed_from_logits
 
-from semantic_metrics import (
-    dice_score,
-    iou_score
+from semantic_metrics import dice_score, iou_score
+
+from instance_metrics import mean_average_precision, count_error
+
+DATA_ROOT = "data/BBBC038"
+
+SPLIT_FILE = "data/BBBC038/splits.json"
+
+CHECKPOINT_DIR = Path(
+    "output_dir/ablations_bbbc038/checkpoints"
 )
 
-from instance_metrics import (
-    count_error,
-    mean_average_precision
-)
-
-
-# ============================================================
-# Configurações
-# ============================================================
-
-DATA_DIR = "data/synthetic"
-
-ABLATION_DIR = Path(
-    "output_dir/ablations"
-)
-
-CHECKPOINT_DIR = (
-    ABLATION_DIR /
-    "checkpoints"
-)
-
-RESULTS_PATH = (
-    ABLATION_DIR /
-    "training_results.json"
-)
-
-EVALUATION_PATH = (
-    ABLATION_DIR /
-    "evaluation_results.json"
+OUTPUT_DIR = Path(
+    "output_dir/ablations_bbbc038/evaluation"
 )
 
 FIGURES_DIR = (
-    ABLATION_DIR /
-    "figures"
+    OUTPUT_DIR / "figures"
 )
 
 BATCH_SIZE = 4
 
+TARGET_SIZE = 256
+
 NUM_CLASSES = 3
 
+SEEDS = [42, 123]
+
 INTERIOR_THRESHOLD = 0.5
+
 FOREGROUND_THRESHOLD = 0.5
+
 MIN_MARKER_SIZE = 10
 
 DEVICE = torch.device(
-    "cuda" if torch.cuda.is_available() else "cpu"
+    "cuda"
+    if torch.cuda.is_available()
+    else "cpu"
 )
 
+def create_test_loader():
 
-# ============================================================
-# Dataset
-# ============================================================
-
-def create_loader():
-
-    dataset = SyntheticSegmentationDataset(
-        DATA_DIR
+    dataset = BBBC038Dataset(
+        root_dir=DATA_ROOT,
+        split="test",
+        split_file=SPLIT_FILE,
+        resize=TARGET_SIZE
     )
 
     loader = DataLoader(
         dataset,
         batch_size=BATCH_SIZE,
-        shuffle=False
+        shuffle=False,
+        num_workers=0
     )
 
     return dataset, loader
 
-
-# ============================================================
-# Modelo
-# ============================================================
 
 def create_model(architecture):
 
@@ -114,26 +98,22 @@ def create_model(architecture):
     return model.to(DEVICE)
 
 
-# ============================================================
-# Carregar modelo
-# ============================================================
-
 def load_model(
     architecture,
-    checkpoint
+    checkpoint_path
 ):
 
     model = create_model(
         architecture
     )
 
-    state_dict = torch.load(
-        checkpoint,
+    checkpoint = torch.load(
+        checkpoint_path,
         map_location=DEVICE
     )
 
     model.load_state_dict(
-        state_dict
+        checkpoint
     )
 
     model.eval()
@@ -141,18 +121,34 @@ def load_model(
     return model
 
 
-# ============================================================
-# Avaliação de uma configuração
-# ============================================================
+def foreground_probability_from_logits(logits):
 
-def evaluate_configuration(
+    probabilities = torch.softmax(
+        logits,
+        dim=1
+    )
+
+    # Classe 0 = background
+    # foreground = interior + boundary
+
+    foreground_probability = (
+        1.0 - probabilities[:, 0:1]
+    )
+
+    return foreground_probability
+
+
+def evaluate_model(
     model,
     loader
 ):
 
     dice_values = []
+
     iou_values = []
+
     map_values = []
+
     count_errors = []
 
     with torch.no_grad():
@@ -163,274 +159,55 @@ def evaluate_configuration(
                 "image"
             ].to(DEVICE)
 
-            semantic_masks = batch[
-                "semantic_mask"
-            ].cpu().numpy()
-
-            instance_masks = batch[
-                "instance_mask"
-            ].cpu().numpy()
-
-            # ------------------------------------------------
-            # Predição do modelo
-            # ------------------------------------------------
-
-            logits = model(images)
-
-            # logits:
-            # [B, 3, H, W]
-
-            probabilities = torch.softmax(
-                logits,
-                dim=1
+            semantic_masks = (
+                batch[
+                    "semantic_mask"
+                ]
+                .to(DEVICE)
+                .unsqueeze(1)
+                .float()
             )
 
-            # probabilities:
-            # [B, 3, H, W]
+            instance_masks = (
+                batch[
+                    "instance_mask"
+                ]
+                .cpu()
+                .numpy()
+            )
 
-            # ------------------------------------------------
-            # Foreground
-            # ------------------------------------------------
+            logits = model(
+                images
+            )
 
             foreground_probability = (
-                1.0 -
-                probabilities[:, 0:1]
-            )
-
-            # Shape:
-            # [B, 1, H, W]
-
-            # ------------------------------------------------
-            # Logit binário para Dice/IoU
-            # ------------------------------------------------
-            #
-            # semantic_metrics.py espera logits
-            # binários e aplica sigmoid internamente.
-            #
-            # Portanto, convertemos a probabilidade
-            # de foreground em logit.
-            # ------------------------------------------------
-
-            foreground_probability_clamped = (
-                foreground_probability.clamp(
-                    1e-6,
-                    1.0 - 1e-6
+                foreground_probability_from_logits(
+                    logits
                 )
             )
 
-            foreground_logit = torch.log(
-                foreground_probability_clamped
-                /
-                (
-                    1.0 -
-                    foreground_probability_clamped
+            foreground_prob = (
+                foreground_probability
+                .clamp(
+                    min=1e-7,
+                    max=1.0 - 1e-7
                 )
             )
 
-            # ------------------------------------------------
-            # Predição semântica
-            # ------------------------------------------------
-
-            foreground_prediction = (
-                foreground_probability >=
-                FOREGROUND_THRESHOLD
-            ).long()
-
-            foreground_target = (
-                torch.from_numpy(
-                    semantic_masks
-                )
-                .unsqueeze(1)
-                .to(DEVICE)
+            foreground_logits = torch.log(
+                foreground_prob /
+                (1.0 - foreground_prob)
             )
-
-            # ------------------------------------------------
-            # Dice
-            # ------------------------------------------------
 
             dice = dice_score(
-                foreground_logit,
-                foreground_target.float(),
-                threshold=0.5
+                foreground_logits,
+                semantic_masks
             )
-
-            # ------------------------------------------------
-            # IoU
-            # ------------------------------------------------
 
             iou = iou_score(
-                foreground_logit,
-                foreground_target.float(),
-                threshold=0.5
+                foreground_logits,
+                semantic_masks
             )
-
-            # ------------------------------------------------
-            # Avaliação por imagem
-            # ------------------------------------------------
-
-            for index in range(
-                images.shape[0]
-            ):
-
-                # --------------------------------------------
-                # Logits de uma única imagem
-                # --------------------------------------------
-
-                sample_logits = logits[index]
-
-                # Esperado:
-                # [3, H, W]
-
-                assert sample_logits.ndim == 3, (
-                    "sample_logits deve possuir "
-                    f"shape [3,H,W], mas recebeu "
-                    f"{sample_logits.shape}"
-                )
-
-                assert sample_logits.shape[0] == NUM_CLASSES, (
-                    "sample_logits deve possuir "
-                    f"{NUM_CLASSES} classes, mas recebeu "
-                    f"{sample_logits.shape[0]}"
-                )
-
-                # --------------------------------------------
-                # Watershed
-                # --------------------------------------------
-                #
-                # watershed_from_logits retorna:
-                #
-                # predicted_instances
-                # markers
-                # foreground_mask
-                #
-                # Todos com shape [H, W].
-                # --------------------------------------------
-
-                (
-                    predicted_instances,
-                    markers,
-                    watershed_foreground
-                ) = watershed_from_logits(
-                    sample_logits,
-                    interior_threshold=
-                    INTERIOR_THRESHOLD,
-                    foreground_threshold=
-                    FOREGROUND_THRESHOLD,
-                    min_marker_size=
-                    MIN_MARKER_SIZE
-                )
-
-                # --------------------------------------------
-                # Ground truth
-                # --------------------------------------------
-
-                ground_truth_instances = (
-                    instance_masks[index]
-                )
-
-                # --------------------------------------------
-                # Probabilidade de foreground
-                # --------------------------------------------
-                #
-                # foreground_probability possui shape:
-                #
-                # [B, 1, H, W]
-                #
-                # Para uma imagem:
-                #
-                # foreground_probability[index, 0]
-                #
-                # resulta em:
-                #
-                # [H, W]
-                #
-                # Isso é exatamente o formato esperado
-                # por instance_metrics.py.
-                # --------------------------------------------
-
-                sample_foreground_probability = (
-                    foreground_probability[
-                        index,
-                        0
-                    ]
-                    .detach()
-                    .cpu()
-                    .numpy()
-                )
-
-                # --------------------------------------------
-                # Verificações de shape
-                # --------------------------------------------
-
-                assert predicted_instances.ndim == 2, (
-                    "predicted_instances deve possuir "
-                    f"shape [H,W], mas recebeu "
-                    f"{predicted_instances.shape}"
-                )
-
-                assert ground_truth_instances.ndim == 2, (
-                    "ground_truth_instances deve possuir "
-                    f"shape [H,W], mas recebeu "
-                    f"{ground_truth_instances.shape}"
-                )
-
-                assert sample_foreground_probability.ndim == 2, (
-                    "sample_foreground_probability deve possuir "
-                    f"shape [H,W], mas recebeu "
-                    f"{sample_foreground_probability.shape}"
-                )
-
-                assert (
-                    predicted_instances.shape ==
-                    ground_truth_instances.shape
-                ), (
-                    "predicted_instances e "
-                    "ground_truth_instances possuem "
-                    f"shapes diferentes: "
-                    f"{predicted_instances.shape} vs "
-                    f"{ground_truth_instances.shape}"
-                )
-
-                assert (
-                    predicted_instances.shape ==
-                    sample_foreground_probability.shape
-                ), (
-                    "predicted_instances e "
-                    "sample_foreground_probability possuem "
-                    f"shapes diferentes: "
-                    f"{predicted_instances.shape} vs "
-                    f"{sample_foreground_probability.shape}"
-                )
-
-                # --------------------------------------------
-                # mAP
-                # --------------------------------------------
-
-                _, sample_map_value = mean_average_precision(
-                    predicted_instances,
-                    ground_truth_instances,
-                    sample_foreground_probability
-                )
-                
-                sample_count_error = (
-                    count_error(
-                        predicted_instances,
-                        ground_truth_instances
-                    )
-                )
-
-                map_values.append(
-                    sample_map_value
-                )
-
-                count_errors.append(
-                    sample_count_error
-                )
-
-
-            # ------------------------------------------------
-            # Métricas semânticas do batch
-            # ------------------------------------------------
 
             dice_values.append(
                 float(dice)
@@ -440,11 +217,105 @@ def evaluate_configuration(
                 float(iou)
             )
 
-    # ========================================================
-    # Médias finais
-    # ========================================================
+            for index in range(
+                images.shape[0]
+            ):
+
+                image_logits = (
+                    logits[index]
+                )
+
+                gt_instance_mask = (
+                    instance_masks[index]
+                )
+
+                predicted_instances, _, _ = (
+                    watershed_from_logits(
+                        image_logits,
+                        interior_threshold=(
+                            INTERIOR_THRESHOLD
+                        ),
+                        foreground_threshold=(
+                            FOREGROUND_THRESHOLD
+                        ),
+                        min_marker_size=(
+                            MIN_MARKER_SIZE
+                        )
+                    )
+                )
+
+                predicted_instances = (
+                    np.asarray(
+                        predicted_instances
+                    )
+                )
+
+                gt_instance_mask = (
+                    np.asarray(
+                        gt_instance_mask
+                    )
+                )
+
+                probability = (
+                    foreground_probability[
+                        index,
+                        0
+                    ]
+                    .detach()
+                    .cpu()
+                    .numpy()
+                )
+
+                assert (
+                    predicted_instances.ndim
+                    == 2
+                )
+
+                assert (
+                    gt_instance_mask.ndim
+                    == 2
+                )
+
+                assert (
+                    probability.ndim
+                    == 2
+                )
+
+                assert (
+                    predicted_instances.shape
+                    ==
+                    gt_instance_mask.shape
+                )
+
+                assert (
+                    predicted_instances.shape
+                    ==
+                    probability.shape
+                )
+
+                _, map_value = (
+                    mean_average_precision(
+                        predicted_instances,
+                        gt_instance_mask,
+                        probability
+                    )
+                )
+
+                map_values.append(
+                    float(map_value)
+                )
+
+                error = count_error(
+                    predicted_instances,
+                    gt_instance_mask
+                )
+
+                count_errors.append(
+                    float(error)
+                )
 
     return {
+
         "dice": float(
             np.mean(dice_values)
         ),
@@ -462,10 +333,262 @@ def evaluate_configuration(
         )
     }
 
+def resolution_checkpoint_name(
+    architecture,
+    seed
+):
 
-# ============================================================
-# Estatísticas
-# ============================================================
+    return (
+        CHECKPOINT_DIR /
+        f"resolution_"
+        f"{architecture}_"
+        f"seed_{seed}.pth"
+    )
+
+
+def loss_checkpoint_name(
+    loss_name,
+    gamma,
+    seed
+):
+
+    return (
+        CHECKPOINT_DIR /
+        f"loss_"
+        f"{loss_name}_"
+        f"gamma_{gamma:g}_"
+        f"seed_{seed}.pth"
+    )
+
+
+LOSS_CONFIGS = [
+
+    {
+        "name": "ce",
+        "gamma": 0.0
+    },
+
+    {
+        "name": "balanced_ce",
+        "gamma": 0.0
+    },
+
+    {
+        "name": "focal",
+        "gamma": 0.0
+    },
+
+    {
+        "name": "focal",
+        "gamma": 1.0
+    },
+
+    {
+        "name": "focal",
+        "gamma": 2.0
+    },
+
+    {
+        "name": "focal",
+        "gamma": 5.0
+    },
+
+    {
+        "name": "balanced_focal",
+        "gamma": 0.0
+    },
+
+    {
+        "name": "balanced_focal",
+        "gamma": 1.0
+    },
+
+    {
+        "name": "balanced_focal",
+        "gamma": 2.0
+    },
+
+    {
+        "name": "balanced_focal",
+        "gamma": 5.0
+    }
+]
+
+
+def evaluate_resolution(loader):
+
+    results = []
+
+    for architecture in [
+        "unet",
+        "segnet"
+    ]:
+
+        for seed in SEEDS:
+
+            checkpoint = (
+                resolution_checkpoint_name(
+                    architecture,
+                    seed
+                )
+            )
+
+            if not checkpoint.exists():
+
+                print(
+                    f"[AVISO] "
+                    f"Checkpoint não encontrado: "
+                    f"{checkpoint}"
+                )
+
+                continue
+
+            print()
+            print(
+                f"Avaliando "
+                f"{architecture} "
+                f"seed={seed}"
+            )
+
+            model = load_model(
+                architecture,
+                checkpoint
+            )
+
+            metrics = evaluate_model(
+                model,
+                loader
+            )
+
+            results.append({
+
+                "axis":
+                    "resolution",
+
+                "architecture":
+                    architecture,
+
+                "loss":
+                    "balanced_ce",
+
+                "gamma":
+                    0.0,
+
+                "seed":
+                    seed,
+
+                **metrics
+            })
+
+            print(
+                f"mAP: "
+                f"{metrics['map']:.4f}"
+            )
+
+            print(
+                f"Dice: "
+                f"{metrics['dice']:.4f}"
+            )
+
+            print(
+                f"IoU: "
+                f"{metrics['iou']:.4f}"
+            )
+
+            print(
+                f"Count error: "
+                f"{metrics['count_error']:.4f}"
+            )
+
+    return results
+
+
+def evaluate_loss(loader):
+
+    results = []
+
+    for config in LOSS_CONFIGS:
+
+        for seed in SEEDS:
+
+            checkpoint = (
+                loss_checkpoint_name(
+                    config["name"],
+                    config["gamma"],
+                    seed
+                )
+            )
+
+            if not checkpoint.exists():
+
+                print(
+                    f"[AVISO] "
+                    f"Checkpoint não encontrado: "
+                    f"{checkpoint}"
+                )
+
+                continue
+
+            print()
+            print(
+                f"Avaliando "
+                f"{config['name']} "
+                f"gamma={config['gamma']} "
+                f"seed={seed}"
+            )
+
+            model = load_model(
+                "unet",
+                checkpoint
+            )
+
+            metrics = evaluate_model(
+                model,
+                loader
+            )
+
+            results.append({
+
+                "axis":
+                    "loss",
+
+                "architecture":
+                    "unet",
+
+                "loss":
+                    config["name"],
+
+                "gamma":
+                    config["gamma"],
+
+                "seed":
+                    seed,
+
+                **metrics
+            })
+
+            print(
+                f"mAP: "
+                f"{metrics['map']:.4f}"
+            )
+
+            print(
+                f"Dice: "
+                f"{metrics['dice']:.4f}"
+            )
+
+            print(
+                f"IoU: "
+                f"{metrics['iou']:.4f}"
+            )
+
+            print(
+                f"Count error: "
+                f"{metrics['count_error']:.4f}"
+            )
+
+    return results
+
 
 def mean_std(values):
 
@@ -474,14 +597,8 @@ def mean_std(values):
         dtype=float
     )
 
-    if len(values) == 1:
-
-        return {
-            "mean": float(values[0]),
-            "std": 0.0
-        }
-
     return {
+
         "mean": float(
             np.mean(values)
         ),
@@ -495,22 +612,28 @@ def mean_std(values):
     }
 
 
-# ============================================================
-# Agrupamento
-# ============================================================
-
-def summarize_results(results):
+def summarize_results(
+    results
+):
 
     groups = {}
 
     for result in results:
 
-        key = (
-            result["axis"],
-            result["architecture"],
-            result["loss"],
-            result["gamma"]
-        )
+        if result["axis"] == "resolution":
+
+            key = (
+                result["axis"],
+                result["architecture"]
+            )
+
+        else:
+
+            key = (
+                result["axis"],
+                result["loss"],
+                result["gamma"]
+            )
 
         if key not in groups:
 
@@ -524,52 +647,50 @@ def summarize_results(results):
 
     for key, group in groups.items():
 
-        axis = key[0]
-        architecture = key[1]
-        loss_name = key[2]
-        gamma = key[3]
+        first = group[0]
 
         summary = {
-            "axis": axis,
 
-            "architecture": architecture,
+            "axis":
+                first["axis"],
 
-            "loss": loss_name,
+            "architecture":
+                first["architecture"],
 
-            "gamma": gamma,
+            "loss":
+                first["loss"],
+
+            "gamma":
+                first["gamma"],
 
             "seeds": [
                 item["seed"]
                 for item in group
             ],
 
-            "dice": mean_std(
-                [
+            "dice":
+                mean_std([
                     item["dice"]
                     for item in group
-                ]
-            ),
+                ]),
 
-            "iou": mean_std(
-                [
+            "iou":
+                mean_std([
                     item["iou"]
                     for item in group
-                ]
-            ),
+                ]),
 
-            "map": mean_std(
-                [
+            "map":
+                mean_std([
                     item["map"]
                     for item in group
-                ]
-            ),
+                ]),
 
-            "count_error": mean_std(
-                [
+            "count_error":
+                mean_std([
                     item["count_error"]
                     for item in group
-                ]
-            )
+                ])
         }
 
         summaries.append(
@@ -579,54 +700,45 @@ def summarize_results(results):
     return summaries
 
 
-# ============================================================
-# Gráfico do Eixo 1
-# ============================================================
-
-def plot_resolution_ablation(
+def plot_resolution(
     summaries
 ):
 
     data = [
         item
         for item in summaries
-        if item["axis"] ==
-        "resolution"
+        if item["axis"] == "resolution"
     ]
 
     if not data:
-
         return
 
-    labels = []
-    means = []
-    stds = []
+    labels = [
+        item["architecture"]
+        for item in data
+    ]
 
-    for item in data:
+    means = [
+        item["map"]["mean"]
+        for item in data
+    ]
 
-        labels.append(
-            item["architecture"]
-        )
-
-        means.append(
-            item["map"]["mean"]
-        )
-
-        stds.append(
-            item["map"]["std"]
-        )
+    stds = [
+        item["map"]["std"]
+        for item in data
+    ]
 
     FIGURES_DIR.mkdir(
         parents=True,
         exist_ok=True
     )
 
-    plt.figure(
-        figsize=(8, 5)
-    )
-
     x = np.arange(
         len(labels)
+    )
+
+    plt.figure(
+        figsize=(8, 5)
     )
 
     plt.bar(
@@ -638,7 +750,10 @@ def plot_resolution_ablation(
 
     plt.xticks(
         x,
-        labels
+        [
+            "U-Net\nSkip connections",
+            "SegNet\nMax-unpooling"
+        ]
     )
 
     plt.ylabel(
@@ -660,39 +775,42 @@ def plot_resolution_ablation(
     plt.close()
 
 
-# ============================================================
-# Gráfico do Eixo 2
-# ============================================================
-
-def plot_loss_ablation(
+def plot_loss(
     summaries
 ):
 
     data = [
         item
         for item in summaries
-        if item["axis"] ==
-        "loss"
+        if item["axis"] == "loss"
     ]
 
     if not data:
-
         return
 
     labels = []
+
     means = []
+
     stds = []
 
     for item in data:
 
-        label = (
-            f"{item['loss']}\n"
-            f"γ={item['gamma']:g}"
-        )
+        if item["loss"] in [
+            "ce",
+            "balanced_ce"
+        ]:
 
-        labels.append(
-            label
-        )
+            label = item["loss"]
+
+        else:
+
+            label = (
+                f"{item['loss']}\n"
+                f"gamma={item['gamma']:g}"
+            )
+
+        labels.append(label)
 
         means.append(
             item["map"]["mean"]
@@ -702,6 +820,10 @@ def plot_loss_ablation(
             item["map"]["std"]
         )
 
+    x = np.arange(
+        len(labels)
+    )
+
     FIGURES_DIR.mkdir(
         parents=True,
         exist_ok=True
@@ -709,10 +831,6 @@ def plot_loss_ablation(
 
     plt.figure(
         figsize=(12, 6)
-    )
-
-    x = np.arange(
-        len(labels)
     )
 
     plt.bar(
@@ -748,226 +866,151 @@ def plot_loss_ablation(
     plt.close()
 
 
-# ============================================================
-# Impressão
-# ============================================================
-
-def print_results(
+def print_summary(
     summaries
 ):
 
     print()
     print("=" * 80)
-    print("RESULTADOS DAS ABLAÇÕES")
+    print(
+        "RESULTADOS — PARTE 3"
+    )
     print("=" * 80)
 
     for item in summaries:
 
         print()
 
+        if item["axis"] == "resolution":
+
+            name = (
+                f"{item['architecture']}"
+            )
+
+        else:
+
+            name = (
+                f"{item['loss']}"
+            )
+
+            if item["loss"] not in [
+                "ce",
+                "balanced_ce"
+            ]:
+
+                name += (
+                    f" (gamma="
+                    f"{item['gamma']:g})"
+                )
+
         print(
-            f"Eixo: "
-            f"{item['axis']}"
+            f"{name}"
         )
 
         print(
-            f"Arquitetura: "
-            f"{item['architecture']}"
-        )
-
-        print(
-            f"Loss: "
-            f"{item['loss']}"
-        )
-
-        print(
-            f"Gamma: "
-            f"{item['gamma']}"
-        )
-
-        print(
-            f"Seeds: "
-            f"{item['seeds']}"
-        )
-
-        print(
-            f"Dice: "
+            f"  Dice: "
             f"{item['dice']['mean']:.4f} "
             f"± "
             f"{item['dice']['std']:.4f}"
         )
 
         print(
-            f"IoU: "
+            f"  IoU:  "
             f"{item['iou']['mean']:.4f} "
             f"± "
             f"{item['iou']['std']:.4f}"
         )
 
         print(
-            f"mAP: "
+            f"  mAP:  "
             f"{item['map']['mean']:.4f} "
             f"± "
             f"{item['map']['std']:.4f}"
         )
 
         print(
-            f"Erro de contagem: "
+            f"  Count error: "
             f"{item['count_error']['mean']:.4f} "
             f"± "
             f"{item['count_error']['std']:.4f}"
         )
 
 
-# ============================================================
-# Main
-# ============================================================
-
 def main():
 
+    print("=" * 80)
+    print("PARTE 3 — AVALIAÇÃO DAS ABLAÇÕES")
+    print("=" * 80)
+
+    print(f"Device: {DEVICE}")
+
+    dataset, loader = (create_test_loader())
+
     print(
-        f"Device: {DEVICE}"
+        f"Test images: "
+        f"{len(dataset)}"
     )
 
-    dataset, loader = create_loader()
+    resolution_results = (evaluate_resolution(loader))
 
-    print(
-        f"Dataset: {len(dataset)} imagens"
+    loss_results = (evaluate_loss(loader))
+
+    all_results = (
+        resolution_results +
+        loss_results
     )
 
-    # --------------------------------------------------------
-    # Verificar resultados do treinamento
-    # --------------------------------------------------------
+    summaries = summarize_results(all_results)
 
-    if not RESULTS_PATH.exists():
-
-        raise FileNotFoundError(
-            f"Arquivo de resultados do treinamento "
-            f"não encontrado: {RESULTS_PATH}"
-        )
-
-    with open(
-        RESULTS_PATH,
-        "r",
-        encoding="utf-8"
-    ) as file:
-
-        training_results = json.load(
-            file
-        )
-
-    evaluated_results = []
-
-    print()
-    print(
-        "Avaliando checkpoints..."
-    )
-
-    # --------------------------------------------------------
-    # Avaliar cada checkpoint
-    # --------------------------------------------------------
-
-    for training_result in (
-        training_results
-    ):
-
-        checkpoint = (
-            training_result["checkpoint"]
-        )
-
-        architecture = (
-            training_result["architecture"]
-        )
-
-        print(
-            f"\nAvaliando: "
-            f"{checkpoint}"
-        )
-
-        model = load_model(
-            architecture,
-            checkpoint
-        )
-
-        metrics = evaluate_configuration(
-            model,
-            loader
-        )
-
-        result = {
-            **training_result,
-            **metrics
-        }
-
-        evaluated_results.append(
-            result
-        )
-
-    # --------------------------------------------------------
-    # Resumo
-    # --------------------------------------------------------
-
-    summaries = summarize_results(
-        evaluated_results
-    )
-
-    ABLATION_DIR.mkdir(
+    OUTPUT_DIR.mkdir(
         parents=True,
         exist_ok=True
     )
 
-    # --------------------------------------------------------
-    # Salvar resultados
-    # --------------------------------------------------------
+    results_path = (
+        OUTPUT_DIR /
+        "ablation_results.json"
+    )
 
     with open(
-        EVALUATION_PATH,
+        results_path,
         "w",
         encoding="utf-8"
     ) as file:
 
         json.dump(
             {
-                "runs": evaluated_results,
-                "summary": summaries
+                "per_seed":
+                    all_results,
+
+                "mean_std":
+                    summaries
             },
             file,
             indent=2,
             ensure_ascii=False
         )
 
-    # --------------------------------------------------------
-    # Gráficos
-    # --------------------------------------------------------
+    plot_resolution(summaries)
 
-    plot_resolution_ablation(
-        summaries
-    )
+    plot_loss(summaries)
 
-    plot_loss_ablation(
-        summaries
-    )
-
-    # --------------------------------------------------------
-    # Mostrar resultados
-    # --------------------------------------------------------
-
-    print_results(
-        summaries
-    )
+    print_summary(summaries)
 
     print()
     print("=" * 80)
 
     print(
         f"Resultados salvos em: "
-        f"{EVALUATION_PATH}"
+        f"{results_path}"
     )
 
     print(
-        f"Gráficos salvos em: "
+        f"Figuras salvas em: "
         f"{FIGURES_DIR}"
     )
+
+    print("=" * 80)
 
 
 if __name__ == "__main__":

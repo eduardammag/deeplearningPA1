@@ -1,0 +1,180 @@
+[
+  {
+    "axis": "resolution",
+    "configuration": [
+      "resolution",
+      "unet"
+    ],
+    "n_seeds": 2,
+    "dice_mean": 0.7342226471185412,
+    "dice_std": 0.017471456767996996,
+    "iou_mean": 0.5802072417576696,
+    "iou_std": 0.02181151562397296,
+    "val_loss_mean": 0.17578967221081257,
+    "val_loss_std": 0.0023786837308906986
+  },
+  {
+    "axis": "resolution",
+    "configuration": [
+      "resolution",
+      "segnet"
+    ],
+    "n_seeds": 2,
+    "dice_mean": 0.6802968263372864,
+    "dice_std": 0.03450142403933673,
+    "iou_mean": 0.5160103778045585,
+    "iou_std": 0.03963354634323094,
+    "val_loss_mean": 0.18023442722856997,
+    "val_loss_std": 0.00970388292008264
+  },
+  {
+    "axis": "loss",
+    "configuration": [
+      "loss",
+      "ce",
+      0.0
+    ],
+    "n_seeds": 2,
+    "dice_mean": 0.7519851124398523,
+    "dice_std": 0.01992612294928864,
+    "iou_mean": 0.6027492730318735,
+    "iou_std": 0.025589902323802975,
+    "val_loss_mean": 0.1595883823186159,
+    "val_loss_std": 0.0031525500243004584
+  },
+  {
+    "axis": "loss",
+    "configuration": [
+      "loss",
+      "balanced_ce",
+      0.0
+    ],
+    "n_seeds": 2,
+    "dice_mean": 0.7342226471185412,
+    "dice_std": 0.017471456767996996,
+    "iou_mean": 0.5802072417576696,
+    "iou_std": 0.02181151562397296,
+    "val_loss_mean": 0.17578967221081257,
+    "val_loss_std": 0.0023786837308906986
+  },
+  {
+    "axis": "loss",
+    "configuration": [
+      "loss",
+      "focal",
+      0.0
+    ],
+    "n_seeds": 2,
+    "dice_mean": 0.7519851124398523,
+    "dice_std": 0.01992612294928864,
+    "iou_mean": 0.6027492730318735,
+    "iou_std": 0.025589902323802975,
+    "val_loss_mean": 0.1595883809030056,
+    "val_loss_std": 0.0031525482330593975
+  },
+  {
+    "axis": "loss",
+    "configuration": [
+      "loss",
+      "focal",
+      1.0
+    ],
+    "n_seeds": 2,
+    "dice_mean": 0.7542090483102958,
+    "dice_std": 0.03694206857436246,
+    "iou_mean": 0.6061119359095146,
+    "iou_std": 0.04762684878550128,
+    "val_loss_mean": 0.08089326031506061,
+    "val_loss_std": 0.0091617395783173
+  },
+  {
+    "axis": "loss",
+    "configuration": [
+      "loss",
+      "focal",
+      2.0
+    ],
+    "n_seeds": 2,
+    "dice_mean": 0.747884187345433,
+    "dice_std": 0.001208241733677952,
+    "iou_mean": 0.5972970798189938,
+    "iou_std": 0.0015413278655332305,
+    "val_loss_mean": 0.0501575249992311,
+    "val_loss_std": 0.0011537100504354976
+  },
+  {
+    "axis": "loss",
+    "configuration": [
+      "loss",
+      "focal",
+      5.0
+    ],
+    "n_seeds": 2,
+    "dice_mean": 0.7583316488402279,
+    "dice_std": 0.03180233589082926,
+    "iou_mean": 0.611264568248889,
+    "iou_std": 0.04126865032887475,
+    "val_loss_mean": 0.009496489409357309,
+    "val_loss_std": 0.0005500441768162946
+  },
+  {
+    "axis": "loss",
+    "configuration": [
+      "loss",
+      "balanced_focal",
+      0.0
+    ],
+    "n_seeds": 2,
+    "dice_mean": 0.7556564266069978,
+    "dice_std": 0.02325664658368402,
+    "iou_mean": 0.6075539070099549,
+    "iou_std": 0.030045008371448516,
+    "val_loss_mean": 0.1666804377734661,
+    "val_loss_std": 0.016338959391146414
+  },
+  {
+    "axis": "loss",
+    "configuration": [
+      "loss",
+      "balanced_focal",
+      1.0
+    ],
+    "n_seeds": 2,
+    "dice_mean": 0.7283199154710287,
+    "dice_std": 0.006612288601011124,
+    "iou_mean": 0.572743853611519,
+    "iou_std": 0.00817771417675207,
+    "val_loss_mean": 0.09948636133223772,
+    "val_loss_std": 0.0008713901495969009
+  },
+  {
+    "axis": "loss",
+    "configuration": [
+      "loss",
+      "balanced_focal",
+      2.0
+    ],
+    "n_seeds": 2,
+    "dice_mean": 0.764713641976583,
+    "dice_std": 0.03137075460150508,
+    "iou_mean": 0.6195800496803874,
+    "iou_std": 0.041130097459599384,
+    "val_loss_mean": 0.05425919085741043,
+    "val_loss_std": 0.00634229432631042
+  },
+  {
+    "axis": "loss",
+    "configuration": [
+      "loss",
+      "balanced_focal",
+      5.0
+    ],
+    "n_seeds": 2,
+    "dice_mean": 0.7367436846933568,
+    "dice_std": 0.028919494955751305,
+    "iou_mean": 0.5836249494037772,
+    "iou_std": 0.03625363529250793,
+    "val_loss_mean": 0.014041139245964587,
+    "val_loss_std": 0.00015702804790574082
+  }
+]

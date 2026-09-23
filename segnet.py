@@ -3,20 +3,23 @@ import torch.nn as nn
 
 
 class DoubleConv(nn.Module):
-    """
-    Dois blocos convolucionais 3x3 com ReLU.
-    """
 
-    def __init__(self, in_channels, out_channels):
+    def __init__(
+        self,
+        in_channels,
+        out_channels
+    ):
         super().__init__()
 
         self.block = nn.Sequential(
+
             nn.Conv2d(
                 in_channels,
                 out_channels,
                 kernel_size=3,
                 padding=1
             ),
+
             nn.ReLU(inplace=True),
 
             nn.Conv2d(
@@ -25,34 +28,20 @@ class DoubleConv(nn.Module):
                 kernel_size=3,
                 padding=1
             ),
+
             nn.ReLU(inplace=True)
         )
 
     def forward(self, x):
+
         return self.block(x)
 
 
 class SegNet(nn.Module):
-    """
-    SegNet simplificada para a ablação de recuperação de resolução.
 
-    O encoder utiliza MaxPooling com índices.
-    O decoder recupera a resolução utilizando MaxUnpool2d.
+    def __init__(self, in_channels=1, num_classes=3, base_channels=32):
 
-    Diferentemente da U-Net, não são utilizadas skip connections.
-    """
-
-    def __init__(
-        self,
-        in_channels=1,
-        num_classes=3,
-        base_channels=32
-    ):
         super().__init__()
-
-        # ==================================================
-        # Encoder
-        # ==================================================
 
         self.enc1 = DoubleConv(
             in_channels,
@@ -74,27 +63,16 @@ class SegNet(nn.Module):
             base_channels * 8
         )
 
-        # ==================================================
-        # Bottleneck
-        #
-        # Mantemos 256 canais para que sejam compatíveis
-        # com os índices produzidos pelo último MaxPool.
-        # ==================================================
-
-        self.bottleneck = DoubleConv(
-            base_channels * 8,
-            base_channels * 8
-        )
-
         self.pool = nn.MaxPool2d(
             kernel_size=2,
             stride=2,
             return_indices=True
         )
 
-        # ==================================================
-        # Decoder
-        # ==================================================
+        self.bottleneck = DoubleConv(
+            base_channels * 8,
+            base_channels * 8
+        )
 
         self.unpool = nn.MaxUnpool2d(
             kernel_size=2,
@@ -121,10 +99,6 @@ class SegNet(nn.Module):
             base_channels
         )
 
-        # ==================================================
-        # Output
-        # ==================================================
-
         self.out = nn.Conv2d(
             base_channels,
             num_classes,
@@ -132,10 +106,6 @@ class SegNet(nn.Module):
         )
 
     def forward(self, x):
-
-        # ==================================================
-        # Encoder
-        # ==================================================
 
         e1 = self.enc1(x)
 
@@ -153,15 +123,7 @@ class SegNet(nn.Module):
 
         p4, indices4 = self.pool(e4)
 
-        # ==================================================
-        # Bottleneck
-        # ==================================================
-
         b = self.bottleneck(p4)
-
-        # ==================================================
-        # Decoder
-        # ==================================================
 
         d4 = self.unpool(
             b,
